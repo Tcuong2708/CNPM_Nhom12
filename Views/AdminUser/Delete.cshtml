@@ -1,0 +1,115 @@
+﻿@model QuanLyKhachSan.Models.Account
+
+@{
+    ViewBag.Title = "Xác nhận xóa người dùng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --danger-red: #A93226; /* Đỏ trầm sang trọng hơn đỏ tươi */
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(15, 41, 66, 0.15);
+        overflow: hidden;
+        border: none;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Header màu Navy */
+    .delete-header {
+        background-color: var(--navy-color);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 3px solid var(--danger-red); /* Viền đỏ cảnh báo */
+    }
+
+    /* Avatar icon */
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background: white;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        color: var(--danger-red);
+        border: 4px solid #f8f9fa;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Warning box kiểu Gold sang trọng */
+    .warning-box {
+        background-color: #fffdf0; /* Nền vàng rất nhạt */
+        color: #856404; /* Chữ vàng nâu */
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #ffeeba;
+        margin: 20px 0;
+        font-size: 0.95rem;
+        text-align: left;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h3 class="mb-0 fw-bold text-uppercase" style="letter-spacing: 1px;">
+                <i class="bi bi-person-x-fill me-2 text-danger"></i>Xóa Tài Khoản
+            </h3>
+        </div>
+
+        <div class="card-body p-4 text-center">
+            <p class="text-secondary mb-4">Bạn có chắc chắn muốn xóa người dùng này khỏi hệ thống?</p>
+
+            <div class="avatar-circle">
+                <i class="bi bi-person-dash"></i>
+            </div>
+
+            <h3 class="fw-bold" style="color: var(--navy-color);">@Model.HoTen</h3>
+            <p class="text-muted mb-2">Username: <strong class="text-dark">@Model.TenDangNhap</strong></p>
+
+            <div class="mt-2">
+                @if (Model.RoleID == 1)
+                {
+                    <span class="badge bg-danger rounded-pill px-3 py-2">Quản Trị Viên (Admin)</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary rounded-pill px-3 py-2">Khách Hàng</span>
+                }
+            </div>
+
+            <div class="px-3">
+                <div class="warning-box">
+                    <strong><i class="bi bi-exclamation-triangle-fill me-1"></i> Lưu ý quan trọng:</strong><br />
+                    Hành động này không thể hoàn tác. Toàn bộ dữ liệu liên quan đến tài khoản này (lịch sử đặt phòng, bình luận...) cũng sẽ bị xóa vĩnh viễn.
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a href="/AdminUser/Index" class="btn btn-light border px-4">
+                        <i class="bi bi-x-lg me-1"></i> Hủy bỏ
+                    </a>
+
+                    <button type="submit" class="btn px-4 fw-bold text-white shadow-sm" style="background-color: var(--danger-red); border: none;">
+                        <i class="bi bi-trash-fill me-1"></i> Xác nhận xóa
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

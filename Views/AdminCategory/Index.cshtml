@@ -1,0 +1,135 @@
+﻿@model List<QuanLyKhachSan.Models.Loai>
+
+@{
+    ViewBag.Title = "Quản lý loại phòng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+        --bg-light: #f8f9fa;
+    }
+
+    .admin-card {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    /* Tiêu đề bảng màu Navy */
+    .table-header-navy {
+        background-color: var(--navy-color);
+        color: white;
+    }
+
+    /* Nút Thêm Mới màu Vàng Kim */
+    .btn-gold {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Badge số lượng */
+    .badge-count {
+        background-color: #e9ecef;
+        color: var(--navy-color);
+        font-weight: 600;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Nút thao tác nhỏ */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        line-height: 32px;
+        border-radius: 50%;
+        transition: 0.2s;
+    }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-uppercase" style="color: var(--navy-color);">
+            <i class="bi bi-bookmark-star-fill me-2 text-gold"></i>Quản Lý Loại Phòng
+        </h3>
+        <a href="/AdminCategory/Create" class="btn btn-gold px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Thêm Mới
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-header-navy">
+                        <tr>
+                            <th class="ps-4 py-3 text-uppercase small">Mã số</th>
+                            <th class="text-uppercase small">Tên loại phòng</th>
+                            <th class="text-center text-uppercase small">Số lượng phòng</th>
+                            <th class="text-center text-uppercase small" style="width: 150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">#@item.MaLoai</td>
+
+                                    <td class="fw-bold" style="color: var(--navy-color);">
+                                        <i class="bi bi-tag-fill me-2" style="color: var(--gold-color); opacity: 0.7;"></i>
+                                        @item.Name
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span class="badge badge-count rounded-pill px-3 py-2">
+                                            @(item.Phongs != null ? item.Phongs.Count : 0) phòng
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="/AdminCategory/Edit/@item.MaLoai" class="btn btn-warning btn-sm text-white btn-action mx-1 shadow-sm" title="Chỉnh sửa" style="background-color: var(--gold-color); border:none;">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <a href="/AdminCategory/Delete/@item.MaLoai" class="btn btn-danger btn-sm text-white btn-action shadow-sm" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+                                    <p>Chưa có loại phòng nào trong hệ thống.</p>
+                                    <a href="/AdminCategory/Create" class="btn btn-sm btn-outline-secondary mt-2">Thêm ngay</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

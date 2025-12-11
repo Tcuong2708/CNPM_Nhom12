@@ -1,0 +1,226 @@
+﻿@model QuanLyKhachSan.Models.Phong
+@{
+    ViewBag.Title = "Chi tiết phòng: " + Model.Name;
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+        --bg-light: #f8f9fa;
+    }
+
+    /* Ẩn mũi tên input number */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Style tiêu đề */
+    .detail-title {
+        color: var(--navy-color);
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 2.2rem;
+    }
+
+    /* Style giá tiền */
+    .detail-price {
+        color: var(--gold-color);
+        font-weight: 800;
+        font-size: 1.8rem;
+    }
+
+    /* Nút Đặt phòng */
+    .btn-gold {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        padding: 12px 30px;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            box-shadow: 0 5px 15px rgba(197, 160, 23, 0.3);
+            transform: translateY(-2px);
+        }
+
+    /* Box số lượng */
+    .qty-input {
+        text-align: center;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-weight: 600;
+        color: var(--navy-color);
+    }
+
+        .qty-input:focus {
+            border-color: var(--gold-color);
+            box-shadow: 0 0 0 0.2rem rgba(197, 160, 23, 0.25);
+        }
+
+    /* Tab mô tả */
+    .nav-tabs .nav-link {
+        color: var(--navy-color);
+        font-weight: 600;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: var(--gold-color);
+            border-bottom: 3px solid var(--gold-color);
+        }
+</style>
+
+<div class="container my-5">
+    <div class="row gx-5">
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-lg border-0 overflow-hidden rounded-3">
+                <img src="@Url.Content(Model.ImageUrl)"
+                     class="img-fluid"
+                     alt="@Model.Name"
+                     style="height: 500px; width: 100%; object-fit: cover;">
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="/SanPham/Index" class="text-decoration-none text-muted">Phòng nghỉ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                </ol>
+            </nav>
+
+            <h1 class="detail-title mb-2">@Model.Name</h1>
+
+            <div class="d-flex align-items-center mb-4">
+                <div class="detail-price me-3">
+                    @Model.Price.ToString("N0") <span class="fs-5 text-muted fw-normal">VNĐ / đêm</span>
+                </div>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle-fill me-1"></i>Còn phòng trống
+                </span>
+            </div>
+
+            <div class="p-3 bg-light rounded-3 mb-4 border-start border-4" style="border-color: var(--navy-color) !important;">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-bookmark-star-fill me-2 text-warning"></i>
+                    <strong>Loại phòng:</strong>
+                    <span class="ms-2">@(Model.Loai != null ? Model.Loai.Name : "Tiêu chuẩn")</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-geo-alt-fill me-2 text-danger"></i>
+                    <strong>Vị trí:</strong>
+                    <span class="ms-2">Tầng cao, View thoáng</span>
+                </div>
+            </div>
+
+            <p class="text-secondary mb-4" style="line-height: 1.8;">
+                @Html.Raw(Model.Detail)
+            </p>
+
+            <hr class="my-4 opacity-25" />
+
+            <div class="row align-items-end g-3">
+                <div class="col-md-3 col-6">
+                    <label class="form-label fw-bold small text-uppercase text-muted">Số lượng</label>
+                    <input type="number" value="1" min="1" max="10" id="quantityInput" class="form-control qty-input py-2">
+                </div>
+
+                <div class="col-md-4 col-6">
+                    <label class="form-label fw-bold small text-uppercase text-muted">Tạm tính</label>
+                    <input type="text" id="totalPrice" class="form-control border-0 bg-transparent fw-bold fs-5 p-0"
+                           style="color: var(--gold-color);" readonly>
+                </div>
+
+                <div class="col-md-5 col-12">
+                    <a href="javascript:void(0)"
+                       class="btn btn-gold w-100 btn-add-cart shadow-sm"
+                       data-id="@Model.ID">
+                        <i class="bi bi-bag-plus-fill me-2"></i>ĐẶT PHÒNG
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3">
+                <div class="row text-center small text-muted">
+                    <div class="col-4 border-end"><i class="bi bi-wifi fs-5 d-block mb-1"></i>Wifi Free</div>
+                    <div class="col-4 border-end"><i class="bi bi-tv fs-5 d-block mb-1"></i>Smart TV</div>
+                    <div class="col-4"><i class="bi bi-cup-hot fs-5 d-block mb-1"></i>Ăn sáng</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button">
+                        MÔ TẢ CHI TIẾT
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="policy-tab" data-bs-toggle="tab" data-bs-target="#policy" type="button">
+                        CHÍNH SÁCH
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 border border-top-0 bg-white rounded-bottom" id="myTabContent">
+                <div class="tab-pane fade show active" id="desc" role="tabpanel">
+                    <div class="text-secondary" style="line-height: 1.8;">
+                        @Html.Raw(Model.Detail)
+                        <p class="mt-3">
+                            Phòng được trang bị đầy đủ tiện nghi hiện đại: Điều hòa 2 chiều, Tủ lạnh, Két sắt an toàn, Máy sấy tóc, Ấm đun nước siêu tốc...
+                            Mang đến cho quý khách kỳ nghỉ trọn vẹn và thoải mái nhất.
+                        </p>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="policy" role="tabpanel">
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><i class="bi bi-dot"></i> Giờ nhận phòng: 14:00 - Giờ trả phòng: 12:00.</li>
+                        <li class="mb-2"><i class="bi bi-dot"></i> Hủy phòng trước 3 ngày: Miễn phí.</li>
+                        <li class="mb-2"><i class="bi bi-dot"></i> Trẻ em dưới 6 tuổi: Miễn phí ngủ chung giường với bố mẹ.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const unitPrice = @Model.Price;
+    const quantityInput = document.getElementById("quantityInput");
+    const totalPrice = document.getElementById("totalPrice");
+
+    function updateTotal() {
+        let quantity = parseInt(quantityInput.value);
+
+        // Validate số lượng
+        if (isNaN(quantity) || quantity < 1) {
+            quantity = 1;
+            quantityInput.value = 1;
+        }
+
+        const total = unitPrice * quantity;
+
+        // Format tiền tệ Việt Nam
+        totalPrice.value = total.toLocaleString('vi-VN') + " đ";
+    }
+
+    quantityInput.addEventListener("input", updateTotal);
+    quantityInput.addEventListener("change", updateTotal); // Bắt sự kiện khi click mũi tên lên xuống
+
+    // Chạy lần đầu
+    updateTotal();
+</script>

@@ -1,0 +1,88 @@
+﻿@model QuanLyKhachSan.Models.Phong
+
+@{
+    ViewBag.Title = "Xác nhận xóa";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+        max-width: 600px;
+        margin: 0 auto; /* Căn giữa */
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%); /* Màu đỏ cảnh báo */
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .product-thumb {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 3px solid #fff5f7;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+    }
+
+    .warning-text {
+        background-color: #fff5f5;
+        color: #c0392b;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 5px solid #ff6b6b;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h3 class="mb-0 fw-bold text-uppercase"><i class="bi bi-exclamation-triangle-fill me-2"></i>Xóa Phòng</h3>
+        </div>
+
+        <div class="card-body p-4 text-center">
+            <h5 class="text-muted mb-4">Bạn có chắc chắn muốn xóa phòng này không?</h5>
+
+            <!-- Hiển thị ảnh và tên để xác nhận -->
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Url.Content("~/Content/Images/" + Model.ImageUrl)" class="product-thumb" alt="@Model.Name" />
+            }
+
+            <h3 class="fw-bold text-dark">@Model.Name</h3>
+            <p class="text-danger fs-5 fw-bold">@Model.Price.ToString("#,##0") VNĐ</p>
+
+            <div class="text-start px-4">
+                <div class="warning-text">
+                    <strong><i class="bi bi-info-circle"></i> Lưu ý:</strong>
+                    Hành động này không thể hoàn tác. Sản phẩm sẽ bị xóa vĩnh viễn khỏi hệ thống.
+                </div>
+            </div>
+
+            <!-- Form xác nhận xóa -->
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a href="/AdminProduct/Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-x-lg"></i> Hủy bỏ
+                    </a>
+
+                    <button type="submit" class="btn btn-danger px-4 fw-bold">
+                        <i class="bi bi-trash"></i> Xác nhận xóa
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

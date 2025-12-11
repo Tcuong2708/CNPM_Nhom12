@@ -1,0 +1,269 @@
+﻿@{
+    ViewBag.Title = "Về MAY HOTEL";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    /* --- BẢNG MÀU ROYAL NAVY & GOLD --- */
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --bg-light: #f8f9fa;
+        --text-color: #495057;
+    }
+
+    /* --- HEADER IMAGE --- */
+    .main-image-header {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        filter: brightness(0.7); /* Làm tối ảnh nền để chữ trắng nổi bật */
+    }
+
+    .header-overlay {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+        width: 80%;
+        z-index: 2;
+    }
+
+    .header-title {
+        font-family: 'Playfair Display', serif; /* Font chữ sang trọng cho tiêu đề */
+        font-size: 4rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .header-subtitle {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-top: 10px;
+        color: var(--gold-color); /* Chữ phụ màu Vàng Kim */
+        font-weight: 600;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+    }
+
+    /* --- CONTENT SECTIONS --- */
+    .section-card {
+        background: white;
+        border-radius: 4px; /* Bo góc vuông vức hơn */
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); /* Shadow sâu hơn */
+        padding: 60px 40px;
+        margin-bottom: 60px;
+        border-top: 4px solid var(--gold-color); /* Viền trên màu Vàng Kim */
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        color: var(--navy-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+        text-transform: uppercase;
+    }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--gold-color);
+        }
+
+    .story-text {
+        font-size: 1.05rem;
+        line-height: 1.9;
+        color: var(--text-color);
+        text-align: justify;
+    }
+
+    .drop-cap {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        line-height: 0.8;
+        color: var(--gold-color);
+        float: left;
+        margin-right: 15px;
+        font-weight: 700;
+    }
+
+    /* --- TIMELINE STYLE --- */
+    .timeline-item {
+        border-left: 2px solid rgba(15, 41, 66, 0.2); /* Đường kẻ mờ màu Navy */
+        padding-left: 30px;
+        padding-bottom: 40px;
+        position: relative;
+    }
+
+        .timeline-item:last-child {
+            border-left: none;
+            padding-bottom: 0;
+        }
+
+        /* Dấu chấm tròn trên timeline */
+        .timeline-item::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: var(--gold-color);
+            border: 4px solid white;
+            border-radius: 50%;
+            position: absolute;
+            left: -9px;
+            top: 0;
+            box-shadow: 0 0 0 2px var(--gold-color); /* Viền ngoài màu vàng */
+        }
+
+    .timeline-title {
+        color: var(--navy-color);
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    /* --- IMAGE GALLERY --- */
+    .gallery-img {
+        border-radius: 4px;
+        transition: transform 0.4s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+        .gallery-img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+    .quote-footer {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        color: var(--navy-color);
+        margin-top: 30px;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+        .quote-footer::before {
+            content: '“';
+            font-size: 4rem;
+            color: var(--gold-color);
+            opacity: 0.3;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+</style>
+
+<div style="position: relative;">
+    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/c8/e0/0d/indochine-palace.jpg?w=1400&h=-1&s=1"
+         class="main-image-header"
+         alt="MAY HOTEL" />
+    <div class="header-overlay">
+        <h1 class="header-title">MAY HOTEL</h1>
+        <p class="header-subtitle">Nơi Khởi Nguồn Của Mọi Hành Trình Hoàn Hảo</p>
+    </div>
+</div>
+
+<div class="container" style="margin-top: -80px; position: relative; z-index: 10;">
+
+    <div class="section-card" id="about">
+        <h2 class="section-title">Câu Chuyện Thương Hiệu</h2>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="story-text pe-lg-4">
+                    <p>
+                        <span class="drop-cap">L</span>
+                        <b>MAY HOTEL</b> được xây dựng với khát vọng mang đến một trải nghiệm nghỉ dưỡng vượt trội, nơi sự tinh tế trong kiến trúc giao thoa với phong cách phục vụ tận tâm. Khởi nguồn từ ý tưởng về một không gian lưu trú lý tưởng vào năm 2020, chúng tôi cam kết trở thành điểm dừng chân đáng nhớ nhất, nơi mỗi vị khách đều được đón tiếp như những người thân yêu trở về nhà.
+                    </p>
+                    <p>
+                        Triết lý của chúng tôi rất đơn giản: <i style="color: var(--navy-color); font-weight: 600;">"Đánh thức mọi giác quan, nâng tầm trải nghiệm"</i>. Chúng tôi tin rằng, một khách sạn không chỉ là nơi để ngủ, mà còn là nơi để tái tạo năng lượng, khơi nguồn cảm hứng và tạo nên những kỷ niệm khó quên.
+                    </p>
+                    <p>
+                        Tại <b>MAY HOTEL</b>, sự hoàn hảo nằm trong từng chi tiết nhỏ. Từ nội thất sang trọng, tiện nghi hiện đại cho đến nụ cười chào đón nồng hậu, tất cả nhằm đảm bảo Quý khách luôn cảm thấy được trân trọng và thư giãn tuyệt đối.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div style="padding: 10px; border: 1px solid var(--gold-color); display: inline-block;">
+                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/89/41/96/indochine-palace.jpg?w=1400&h=-1&s=1"
+                         class="img-fluid"
+                         alt="Sảnh khách sạn" style="display: block;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="section-title">Hành Trình Kiến Tạo Giá Trị</h2>
+        <div class="row">
+            <div class="col-lg-5 d-none d-lg-flex align-items-center justify-content-center">
+                <div style="position: relative;">
+                    <div style="position: absolute; top: -10px; left: -10px; width: 100%; height: 100%; border: 2px solid var(--gold-color); border-radius: 50%;"></div>
+                    <img src="https://visithue.vn/Medias/Nam2023/Thang5/khach-san-indochine-palace-hue.jpg"
+                         class="img-fluid rounded-circle shadow"
+                         style="width: 350px; height: 350px; object-fit: cover; border: 10px solid white; position: relative; z-index: 1;"
+                         alt="Hành trình">
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="story-text ps-lg-5 pt-4">
+                    <div class="timeline-item">
+                        <div class="timeline-title">1. Khởi Dựng Tầm Nhìn Đẳng Cấp</div>
+                        <p class="text-muted">
+                            Ý tưởng về MAY HOTEL ra đời từ mong muốn tạo ra một không gian lưu trú sang trọng, kết hợp hài hòa giữa nét kiến trúc hiện đại và sự tiện nghi tối ưu. Chúng tôi đã dành 2 năm để nghiên cứu thị trường và thiết kế từng chi tiết nhỏ nhất.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-title">2. Chuẩn Hóa Dịch Vụ 5 Sao</div>
+                        <p class="text-muted">
+                            Chúng tôi quan niệm "Phục vụ bằng sự thấu hiểu". Mỗi thành viên của MAY HOTEL đều được đào tạo chuyên sâu theo tiêu chuẩn quốc tế để nắm bắt và đáp ứng mọi nhu cầu của khách hàng một cách nhanh chóng và tinh tế.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-title">3. Khẳng Định Vị Thế Dẫn Đầu</div>
+                        <p class="text-muted">
+                            MAY HOTEL không ngừng đổi mới và nâng cấp tiện ích, bao gồm việc giới thiệu Sky Bar và khu Spa trị liệu cao cấp. Chúng tôi tự hào khi nhận được sự tin tưởng từ hàng ngàn lượt khách quốc tế và các giải thưởng uy tín trong ngành.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card" id="gallery">
+        <h2 class="section-title">Không Gian Sang Trọng</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <img src="https://visithue.vn/Medias/Nam2023/Thang5/huetourism-khach-san-indochine-palace-hue-1.jpg"
+                     class="img-fluid gallery-img w-100 h-100 object-fit-cover" style="min-height: 250px;" alt="Không gian 1">
+            </div>
+            <div class="col-md-4">
+                <img src="https://visithue.vn/Medias/Nam2023/Thang5/huetourism-khach-san-indochine-palace-hue-4.jpg"
+                     class="img-fluid gallery-img w-100 h-100 object-fit-cover" style="min-height: 250px;" alt="Không gian 2">
+            </div>
+            <div class="col-md-4">
+                <img src="https://visithue.vn/Medias/Nam2023/Thang5/huetourism-khach-san-indochine-palace-hue-5.jpg"
+                     class="img-fluid gallery-img w-100 h-100 object-fit-cover" style="min-height: 250px;" alt="Không gian 3">
+            </div>
+        </div>
+        <h4 class="text-center quote-footer">
+            "Chạm vào giấc mơ ngọt dịu giữa không gian thanh lịch."
+        </h4>
+    </div>
+
+</div>

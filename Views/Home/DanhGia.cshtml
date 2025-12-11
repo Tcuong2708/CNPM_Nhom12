@@ -1,0 +1,367 @@
+﻿@{
+    ViewBag.Title = "Đánh Giá Khách Hàng - MAY HOTEL";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+        --bg-light: #f8f9fa;
+        --text-muted: #6c757d;
+    }
+
+    .testimonial-section {
+        text-align: center;
+        padding: 60px 20px;
+        background-color: var(--bg-light);
+    }
+
+    .testimonial-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+        color: var(--navy-color);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .testimonial-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background-color: var(--gold-color);
+    }
+
+    /* --- REVIEW BOX (NAVY STYLE) --- */
+    .testimonial-box {
+        background: var(--navy-color);
+        color: #fff;
+        padding: 50px 40px;
+        max-width: 800px;
+        margin: 0 auto 60px;
+        border-radius: 10px;
+        position: relative;
+        box-shadow: 0 15px 40px rgba(15, 41, 66, 0.3);
+        border: 1px solid rgba(197, 160, 23, 0.3); /* Viền vàng mờ */
+    }
+
+    .testimonial-img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 3px solid var(--gold-color); /* Viền ảnh vàng */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #fff;
+    }
+
+    .testimonial-name {
+        font-weight: 700;
+        margin-top: 15px;
+        font-size: 1.2rem;
+        color: var(--gold-color);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .testimonial-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-top: 20px;
+        font-style: italic;
+        opacity: 0.9;
+        font-family: 'Georgia', serif;
+    }
+
+    /* Dấu ngoặc kép trang trí */
+    .testimonial-text::before {
+        content: '\201C';
+        font-size: 3rem;
+        color: var(--gold-color);
+        line-height: 0;
+        margin-right: 10px;
+        vertical-align: -15px;
+    }
+
+    .stars {
+        color: var(--gold-color);
+        margin: 15px 0;
+        font-size: 1.2rem;
+    }
+
+    /* Mũi tên điều hướng */
+    .nav-arrow {
+        font-size: 40px;
+        cursor: pointer;
+        color: rgba(255,255,255,0.3);
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 0.3s;
+    }
+
+    .nav-arrow:hover {
+        color: var(--gold-color);
+    }
+
+    .nav-arrow.left {
+        left: -60px;
+    }
+
+    .nav-arrow.right {
+        right: -60px;
+    }
+
+   
+    @@media (max-width: 992px) {
+        .nav-arrow.left { left: 10px; }
+        .nav-arrow.right { right: 10px; }
+    }
+
+    /* --- FORM SECTION --- */
+    .form-section {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border-top: 5px solid var(--navy-color);
+    }
+
+    .form-section h3 {
+        margin-bottom: 30px;
+        color: var(--navy-color);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--navy-color);
+        display: block;
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 25px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        font-size: 15px;
+        background-color: #fcfcfc;
+        transition: 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--gold-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(197, 160, 23, 0.1);
+    }
+
+    /* Nút Gửi: Màu Vàng Kim */
+    .btn-submit {
+        background-color: var(--gold-color);
+        color: white;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: 700;
+        text-transform: uppercase;
+        transition: all 0.3s;
+        width: 100%;
+        letter-spacing: 1px;
+    }
+
+    .btn-submit:hover {
+        background-color: var(--gold-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(197, 160, 23, 0.3);
+    }
+
+    /* Nút Xóa: Màu Đỏ nhưng style tối giản */
+    .delete-btn {
+        background-color: transparent;
+        color: rgba(255,255,255,0.5);
+        border: 1px solid rgba(255,255,255,0.3);
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .delete-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        border-color: #dc3545;
+    }
+
+</style>
+
+<section class="testimonial-section">
+    <h2><i class="bi bi-chat-quote-fill me-3 text-warning"></i>Khách Hàng Nói Gì Về Chúng Tôi</h2>
+
+    <div class="testimonial-box">
+        <div class="nav-arrow left" onclick="prevTestimonial()">&#10094;</div>
+        <div class="nav-arrow right" onclick="nextTestimonial()">&#10095;</div>
+
+        <img id="avatar" class="testimonial-img" src="https://ui-avatars.com/api/?name=User&background=C5A017&color=fff" alt="avatar" />
+
+        <div class="stars" id="stars"></div>
+        <div class="testimonial-name" id="name"></div>
+        <div class="testimonial-text" id="text"></div>
+
+        <button class="delete-btn" id="deleteBtn" onclick="deleteTestimonial()" title="Xóa đánh giá này">
+            <i class="bi bi-trash"></i> Xóa
+        </button>
+    </div>
+
+    <div class="form-section">
+        <h3><i class="bi bi-pencil-square me-2"></i>Gửi đánh giá của bạn</h3>
+        <form id="reviewForm" onsubmit="submitReview(event)">
+            <div class="text-start">
+                <label for="userName" class="form-label">Họ và tên</label>
+                <input type="text" id="userName" required placeholder="Nhập tên của bạn..." />
+
+                <label for="userStars" class="form-label">Mức độ hài lòng</label>
+                <select id="userStars" required>
+                    <option value="">-- Chọn mức đánh giá --</option>
+                    <option value="5">⭐⭐⭐⭐⭐ - Tuyệt vời (5 sao)</option>
+                    <option value="4">⭐⭐⭐⭐ - Rất tốt (4 sao)</option>
+                    <option value="3">⭐⭐⭐ - Tạm được (3 sao)</option>
+                    <option value="2">⭐⭐ - Cần cải thiện (2 sao)</option>
+                    <option value="1">⭐ - Tệ (1 sao)</option>
+                </select>
+
+                <label for="userText" class="form-label">Nhận xét chi tiết</label>
+                <textarea id="userText" rows="4" required placeholder="Chia sẻ trải nghiệm của bạn tại MAY HOTEL..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-send-fill me-2"></i> Gửi Đánh Giá
+            </button>
+        </form>
+    </div>
+</section>
+
+<script>
+    // Dữ liệu mẫu ban đầu
+    let reviews = [
+        {
+            name: "Nguyễn Văn An",
+            stars: 5,
+            text: "Khách sạn tuyệt vời! Phòng ốc sạch sẽ, nhân viên thân thiện. Vị trí rất thuận tiện để đi lại.",
+            avatar: "https://ui-avatars.com/api/?name=Nguyen+An&background=0F2942&color=fff"
+        },
+        {
+            name: "Trần Thị Bích",
+            stars: 4,
+            text: "Dịch vụ tốt, đồ ăn sáng ngon. Tuy nhiên wifi ở tầng cao hơi yếu một chút. Sẽ quay lại!",
+            avatar: "https://ui-avatars.com/api/?name=Tran+Bich&background=0F2942&color=fff"
+        },
+        {
+            name: "Le Hoang Nam",
+            stars: 5,
+            text: "Trải nghiệm đẳng cấp 5 sao thực thụ. Hồ bơi và Spa rất đẹp. Rất đáng tiền.",
+            avatar: "https://ui-avatars.com/api/?name=Le+Nam&background=0F2942&color=fff"
+        }
+    ];
+
+    let currentIndex = 0;
+
+    function renderTestimonial() {
+        if (reviews.length === 0) {
+            document.querySelector('.testimonial-box').style.display = 'none';
+            return;
+        } else {
+            document.querySelector('.testimonial-box').style.display = 'block';
+        }
+
+        const review = reviews[currentIndex];
+        document.getElementById("name").innerText = review.name;
+        document.getElementById("text").innerText = review.text;
+
+        // Render sao
+        let starHTML = "";
+        for (let i = 0; i < review.stars; i++) {
+            starHTML += "<i class='bi bi-star-fill'></i> ";
+        }
+        for (let i = review.stars; i < 5; i++) {
+            starHTML += "<i class='bi bi-star text-muted opacity-25'></i> ";
+        }
+        document.getElementById("stars").innerHTML = starHTML;
+
+        // Render Avatar
+        document.getElementById("avatar").src = review.avatar || `https://ui-avatars.com/api/?name=${review.name}&background=C5A017&color=fff`;
+    }
+
+    function nextTestimonial() {
+        currentIndex = (currentIndex + 1) % reviews.length;
+        renderTestimonial();
+    }
+
+    function prevTestimonial() {
+        currentIndex = (currentIndex - 1 + reviews.length) % reviews.length;
+        renderTestimonial();
+    }
+
+    function deleteTestimonial() {
+        if (confirm("Bạn có chắc chắn muốn xóa đánh giá này?")) {
+            reviews.splice(currentIndex, 1);
+            if (reviews.length > 0) {
+                currentIndex = currentIndex % reviews.length; // Điều chỉnh index
+                renderTestimonial();
+            } else {
+                renderTestimonial(); // Ẩn box
+            }
+        }
+    }
+
+    function submitReview(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("userName").value;
+        const stars = parseInt(document.getElementById("userStars").value);
+        const text = document.getElementById("userText").value;
+
+        const newReview = {
+            name: name,
+            stars: stars,
+            text: text,
+            avatar: `https://ui-avatars.com/api/?name=${name}&background=0F2942&color=fff`
+        };
+
+        reviews.push(newReview);
+        currentIndex = reviews.length - 1; // Chuyển đến review mới nhất
+        renderTestimonial();
+
+        // Reset form
+        document.getElementById("reviewForm").reset();
+        alert("Cảm ơn bạn đã gửi đánh giá!");
+    }
+
+    // Khởi chạy lần đầu
+    document.addEventListener("DOMContentLoaded", function () {
+        renderTestimonial();
+    });
+</script>

@@ -1,0 +1,179 @@
+﻿@model List<QuanLyKhachSan.Models.Phong>
+
+@{
+    ViewBag.Title = "Quản lý phòng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    /* --- KHAI BÁO LẠI BIẾN MÀU (để đảm bảo hiển thị đúng nếu layout chưa load kịp) --- */
+    :root {
+        --primary-navy: #0F2942; /* Xanh Navy chủ đạo */
+        --accent-gold: #C5A017; /* Vàng Kim điểm nhấn */
+        --bg-gray: #f4f6f8;
+    }
+
+    /* Style cho khung chứa bảng */
+    .admin-card {
+        background: white;
+        border-radius: 8px; /* Bo góc nhẹ hơn cho nam tính, sang trọng */
+        box-shadow: 0 5px 20px rgba(15, 41, 66, 0.1); /* Shadow màu xanh navy nhạt */
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .admin-header {
+        /* ĐỔI: Gradient Hồng -> Màu Xanh Navy phẳng lì, sang trọng */
+        background-color: var(--primary-navy);
+        color: white;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--accent-gold); /* Thêm viền vàng kim bên dưới header */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(197, 160, 23, 0.05); /* Hover ra màu vàng kim rất nhạt */
+        transition: 0.3s;
+    }
+
+    .img-thumb {
+        width: 80px; /* Tăng kích thước ảnh chút cho rõ */
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    /* Nút thao tác hình tròn */
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        padding: 0;
+        line-height: 35px;
+        border-radius: 50%;
+        text-align: center;
+        margin: 0 3px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+    /* Custom màu cho nút thao tác */
+    .btn-view {
+        background-color: var(--primary-navy);
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: var(--accent-gold);
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #dc3545; /* Giữ màu đỏ cho nút xóa */
+        color: white;
+    }
+
+    /* Badge danh mục */
+    .badge-category {
+        background-color: #e9ecef;
+        color: var(--primary-navy);
+        font-weight: 600;
+        border: 1px solid var(--primary-navy);
+    }
+
+    /* Giá tiền */
+    .price-text {
+        color: var(--accent-gold);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="admin-card">
+        <div class="admin-header">
+            <h4 class="mb-0 fw-bold text-uppercase" style="letter-spacing: 1px;">
+                <i class="bi bi-ui-checks-grid me-2 text-warning"></i>Quản Lý Phòng
+            </h4>
+
+            <a href="/AdminProduct/Create" class="btn btn-light fw-bold shadow-sm" style="color: var(--primary-navy);">
+                <i class="bi bi-plus-circle-fill me-1" style="color: var(--accent-gold);"></i> Thêm Phòng Mới
+            </a>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead style="background-color: #f8f9fa; border-bottom: 2px solid #e9ecef;">
+                        <tr>
+                            <th class="ps-4 text-secondary text-uppercase small fw-bold">Hình ảnh</th>
+                            <th class="text-secondary text-uppercase small fw-bold">Tên phòng</th>
+                            <th class="text-secondary text-uppercase small fw-bold">Giá phòng</th>
+                            <th class="text-secondary text-uppercase small fw-bold">Loại phòng</th>
+                            <th class="text-center text-secondary text-uppercase small fw-bold" style="width: 180px">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var p in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <img src="@(string.IsNullOrEmpty(p.ImageUrl) ? "/Content/images/no-image.png" : Url.Content(p.ImageUrl))"
+                                             class="img-thumb shadow-sm"
+                                             alt="@p.Name">
+                                    </td>
+
+                                    <td class="fw-bold" style="color: var(--primary-navy);">@p.Name</td>
+
+                                    <td class="price-text">@p.Price.ToString("#,##0") <small>đ</small></td>
+
+                                    <td>
+                                        <span class="badge badge-category rounded-pill px-3 py-2">
+                                            @(p.Loai != null ? p.Loai.Name : "Chưa phân loại")
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="/AdminProduct/Details/@p.ID" class="btn btn-view btn-action" title="Xem chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="/AdminProduct/Edit/@p.ID" class="btn btn-edit btn-action" title="Chỉnh sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <a href="/AdminProduct/Delete/@p.ID" class="btn btn-delete btn-action" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa phòng này?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-box-seam fs-1 d-block mb-2" style="color: #dee2e6;"></i>
+                                        <p>Hiện chưa có phòng nào trong danh sách.</p>
+                                        <a href="/AdminProduct/Create" class="btn btn-sm btn-outline-dark mt-2">Thêm ngay</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

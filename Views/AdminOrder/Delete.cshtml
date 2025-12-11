@@ -1,0 +1,106 @@
+﻿@model QuanLyKhachSan.Models.HoaDon
+
+@{
+    ViewBag.Title = "Xác nhận xóa đơn đặt";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    .delete-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+        max-width: 600px;
+        margin: 0 auto; /* Căn giữa màn hình */
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%); /* Gradient đỏ cảnh báo */
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .warning-box {
+        background-color: #fff5f5;
+        color: #c0392b;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 5px solid #ff6b6b;
+        margin: 20px 0;
+        font-size: 0.95rem;
+        text-align: left;
+    }
+
+    .order-summary {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        text-align: left;
+        border: 1px solid #eee;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h3 class="mb-0 fw-bold text-uppercase">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>Xóa Đơn Đặt
+            </h3>
+        </div>
+
+        <div class="card-body p-4 text-center">
+            <h5 class="text-muted mb-4">Bạn có chắc chắn muốn xóa đơn đặt này không?</h5>
+
+            <!-- Icon minh họa -->
+            <div style="font-size: 50px; color: #ff6b6b; margin-bottom: 15px;">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+
+            <h3 class="fw-bold text-dark mb-3">Đơn hàng #@Model.MaHD</h3>
+
+            <!-- Tóm tắt đơn hàng -->
+            <div class="order-summary">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted"><i class="bi bi-person-fill me-1"></i>Khách hàng:</span>
+                    <span class="fw-bold text-dark">@Model.HoTen</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted"><i class="bi bi-calendar3 me-1"></i>Ngày đặt:</span>
+                    <span class="fw-bold text-dark">@Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                    <span class="text-muted">Tổng tiền:</span>
+                    <span class="fw-bold text-danger fs-5">@Model.TongTien.ToString("#,##0") đ</span>
+                </div>
+            </div>
+
+            <!-- Cảnh báo -->
+            <div class="warning-box">
+                <strong><i class="bi bi-info-circle-fill"></i> Lưu ý quan trọng:</strong><br />
+                Hành động này sẽ xóa vĩnh viễn đơn đặt và tất cả chi tiết phòng đi kèm. Không thể khôi phục lại dữ liệu sau khi xóa.
+            </div>
+
+            <!-- Form xác nhận -->
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <!-- Nút Hủy -->
+                    <a href="/AdminOrder/Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-x-lg me-1"></i> Hủy bỏ
+                    </a>
+
+                    <!-- Nút Xóa thật -->
+                    <button type="submit" class="btn btn-danger px-4 fw-bold shadow-sm">
+                        <i class="bi bi-trash-fill me-1"></i> Xác nhận xóa
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

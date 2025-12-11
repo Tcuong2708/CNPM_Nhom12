@@ -1,0 +1,160 @@
+﻿@model QuanLyKhachSan.Models.Account
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    /* Định nghĩa màu sắc chủ đạo */
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+    }
+
+    .login-wrapper {
+        background-color: #f8f9fa;
+        padding: 60px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-login {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* ĐỔI MÀU: Header nền Navy, chữ Gold */
+    .card-header-login {
+        background-color: var(--navy-color); /* Navy Blue */
+        color: var(--gold-color); /* Gold text */
+        padding: 25px;
+        text-align: center;
+    }
+
+        .card-header-login h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ĐỔI MÀU: Text phụ */
+        .card-header-login p {
+            color: #ffffff; /* Trắng, nổi bật hơn trên nền Navy */
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+    .form-control-lg {
+        border-radius: 8px;
+        font-size: 15px;
+        padding: 12px 15px;
+        border: 1px solid #e1e1e1;
+    }
+
+        /* ĐỔI MÀU: Focus border Gold */
+        .form-control-lg:focus {
+            border-color: var(--gold-color);
+            box-shadow: 0 0 0 0.2rem rgba(197, 160, 23, 0.25); /* Gold shadow */
+        }
+
+    /* ĐỔI MÀU: Nút Đăng nhập Gold */
+    .btn-login {
+        background-color: var(--gold-color);
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        width: 100%;
+        color: white;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+        /* ĐỔI MÀU: Hover Darker Gold */
+        .btn-login:hover {
+            background-color: var(--gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(197, 160, 23, 0.4); /* Gold shadow */
+            color: white;
+        }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+
+        /* ĐỔI MÀU: Link Gold */
+        .login-footer a {
+            color: var(--gold-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .login-footer a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<div class="login-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-5">
+                <div class="card card-login">
+
+                    <div class="card-header-login">
+                        <h2>Đăng nhập</h2>
+                        <p class="mb-0 small">Chào mừng bạn trở lại với MAY HOTEL</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger text-center mb-4" role="alert">
+                                <i class="fa fa-exclamation-circle"></i> @ViewBag.Error
+                            </div>
+                        }
+
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-navy">Tên đăng nhập</label>
+                                @Html.TextBox("TenDangNhap", null, new { @class = "form-control form-control-lg", placeholder = "Nhập tên đăng nhập của bạn" })
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-navy">Mật khẩu</label>
+                                @Html.Password("MatKhau", null, new { @class = "form-control form-control-lg", placeholder = "Nhập mật khẩu" })
+                            </div>
+
+                            <div class="d-flex justify-content-end mb-3">
+                                <a href="#" class="small" style="color: var(--gold-color); font-weight: 600;">Quên mật khẩu?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> ĐĂNG NHẬP
+                            </button>
+                        }
+
+                        <div class="login-footer">
+                            <p>Chưa có tài khoản? <a href="/Account/Register">Đăng ký ngay</a></p>
+                            <p class="mt-2"><a href="/" style="color: var(--navy-color);" class="small"><i class="fa fa-arrow-left"></i> Quay về trang chủ</a></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

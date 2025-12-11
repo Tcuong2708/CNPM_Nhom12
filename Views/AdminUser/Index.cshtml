@@ -1,0 +1,156 @@
+﻿@model List<QuanLyKhachSan.Models.Account>
+@{
+    ViewBag.Title = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+        --bg-light: #f8f9fa;
+    }
+
+    .admin-card {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+
+    /* Tiêu đề bảng màu Navy */
+    .table-header-navy {
+        background-color: var(--navy-color);
+        color: white;
+    }
+
+    /* Nút Thêm Mới màu Vàng Kim */
+    .btn-gold {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* Badge Vai trò */
+    .badge-role-admin {
+        background-color: #dc3545; /* Đỏ cho Admin */
+        color: white;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .badge-role-user {
+        background-color: #e9ecef; /* Xám sáng cho User */
+        color: var(--navy-color);
+        font-weight: 600;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Nút thao tác nhỏ */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        line-height: 32px;
+        border-radius: 50%;
+        transition: 0.2s;
+    }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-uppercase" style="color: var(--navy-color);">
+            <i class="bi bi-people-fill me-2 text-gold"></i>Quản Lý Người Dùng
+        </h3>
+        <a href="/AdminUser/Create" class="btn btn-gold px-4 shadow-sm">
+            <i class="bi bi-person-plus-fill me-1"></i> Thêm Người Dùng
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-header-navy">
+                        <tr>
+                            <th class="ps-4 py-3 text-uppercase small">Tên đăng nhập</th>
+                            <th class="text-uppercase small">Họ và Tên</th>
+                            <th class="text-uppercase small">Ngày sinh</th>
+                            <th class="text-center text-uppercase small">Vai trò</th>
+                            <th class="text-center text-uppercase small" style="width: 180px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+                                    Chưa có dữ liệu người dùng.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var u in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold" style="color: var(--navy-color);">
+                                        <i class="bi bi-person-badge me-2 text-gold opacity-75"></i>
+                                        @u.TenDangNhap
+                                    </td>
+
+                                    <td>@u.HoTen</td>
+
+                                    <td>
+                                        @(u.NgaySinh != DateTime.MinValue ? u.NgaySinh.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (u.RoleID == 1)
+                                        {
+                                            <span class="badge badge-role-admin rounded-pill px-3">ADMIN</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-role-user rounded-pill px-3">Khách hàng</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="/AdminUser/Details/@u.IDTaiKhoan" class="btn btn-info btn-sm text-white btn-action shadow-sm" title="Xem chi tiết" style="background-color: var(--navy-color); border:none;">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="/AdminUser/Edit/@u.IDTaiKhoan" class="btn btn-warning btn-sm text-white btn-action mx-1 shadow-sm" title="Sửa thông tin" style="background-color: var(--gold-color); border:none;">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a href="/AdminUser/Delete/@u.IDTaiKhoan" class="btn btn-danger btn-sm text-white btn-action shadow-sm"
+                                           title="Xóa"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản @u.TenDangNhap không?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

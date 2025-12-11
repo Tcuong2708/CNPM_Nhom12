@@ -1,0 +1,75 @@
+﻿@model IEnumerable<QuanLyKhachSan.Models.HoaDon>
+
+@{
+    ViewBag.Title = "Quản lý Đơn đặt phòng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<div class="container py-4">
+    <h2 class="text-uppercase fw-bold mb-4" style="color: #0F2942; border-left: 6px solid #C5A017; padding-left: 15px;">
+        Danh sách Đơn đặt phòng
+    </h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background-color: #0F2942; color: white;">
+                    <tr>
+                        <th class="ps-4 py-3">Mã HĐ</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th class="text-center">Ngày ở</th>
+                        <th class="text-end">Tổng tiền</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">#@item.MaHD</td>
+                                <td>
+                                    <span class="fw-bold text-primary">@item.HoTen</span><br />
+                                    <small class="text-muted">@item.DienThoai</small>
+                                </td>
+                                <td>@item.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-center">
+                                    <small>@item.NgayNhan.ToString("dd/MM") <i class="bi bi-arrow-right"></i> @item.NgayTra.ToString("dd/MM")</small>
+                                </td>
+                                <td class="text-end fw-bold" style="color: #C5A017;">
+                                    @item.TongTien.ToString("#,##0") đ
+                                </td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("Details", new { id = item.MaHD })"
+                                       class="btn btn-sm btn-outline-primary border-0" title="Xem chi tiết">
+                                        <i class="bi bi-eye-fill fs-5"></i>
+                                    </a>
+
+                                    <a href="@Url.Action("InHoaDon", new { id = item.MaHD })" target="_blank"
+                                       class="btn btn-sm btn-outline-success border-0 mx-1" title="Xuất hóa đơn">
+                                        <i class="bi bi-printer-fill fs-5"></i>
+                                    </a>
+
+                                    <a href="@Url.Action("Delete", new { id = item.MaHD })"
+                                       class="btn btn-sm btn-outline-danger border-0" title="Xóa đơn">
+                                        <i class="bi bi-trash-fill fs-5"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                Chưa có đơn đặt phòng nào.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

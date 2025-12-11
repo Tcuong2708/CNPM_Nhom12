@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Thống kê doanh thu";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    var doanhThu = ViewBag.ArrDoanhThu as decimal[];
+    var soDon = ViewBag.ArrSoDon as int[];
+}
+
+<div class="container py-4">
+    <h2 class="text-uppercase fw-bold text-center mb-4" style="color: #0F2942;">
+        Thống kê kinh doanh năm @ViewBag.Nam
+    </h2>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-3 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng Doanh Thu Năm</h5>
+                    <h2 class="fw-bold">@doanhThu.Sum().ToString("#,##0") đ</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white mb-3 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng Đơn Đặt Phòng</h5>
+                    <h2 class="fw-bold">@soDon.Sum() đơn</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark mb-3 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Trung bình / Tháng</h5>
+                    <h2 class="fw-bold">@((doanhThu.Sum() / 12).ToString("#,##0")) đ</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-bar-chart-line-fill me-2"></i>Biểu đồ doanh thu từng tháng
+        </div>
+        <div class="card-body">
+            <canvas id="myChart" style="max-height: 400px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Lấy dữ liệu từ ViewBag (C# -> JS)
+    var dataDoanhThu = @Html.Raw(Json.Encode(doanhThu));
+    var dataSoDon = @Html.Raw(Json.Encode(soDon));
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar', // Dạng biểu đồ cột
+        data: {
+            labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+            datasets: [
+                {
+                    label: 'Doanh thu (VNĐ)',
+                    data: dataDoanhThu,
+                    backgroundColor: 'rgba(15, 41, 66, 0.8)', // Màu Navy
+                    borderColor: 'rgba(15, 41, 66, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Số đơn đặt',
+                    data: dataSoDon,
+                    type: 'line', // Đường line chạy ngang
+                    borderColor: '#C5A017', // Màu vàng
+                    backgroundColor: '#C5A017',
+                    borderWidth: 3,
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,
+                    title: { display: true, text: 'Doanh thu' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: { drawOnChartArea: false }, // Ẩn lưới bên phải cho đỡ rối
+                    title: { display: true, text: 'Số đơn' }
+                }
+            }
+        }
+    });
+</script>

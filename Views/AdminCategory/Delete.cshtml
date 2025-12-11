@@ -1,0 +1,124 @@
+﻿@model QuanLyKhachSan.Models.Loai
+
+@{
+    ViewBag.Title = "Xác nhận xóa";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    /* Bảng màu chuẩn */
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(15, 41, 66, 0.15);
+        overflow: hidden;
+        border: none;
+        max-width: 550px;
+        margin: 0 auto;
+    }
+
+    /* Header màu Navy + Viền vàng */
+    .delete-header {
+        background-color: var(--navy-color);
+        color: white;
+        padding: 25px;
+        text-align: center;
+        border-bottom: 4px solid var(--gold-color);
+    }
+
+    .text-navy {
+        color: var(--navy-color) !important;
+    }
+
+    .text-gold {
+        color: var(--gold-color) !important;
+    }
+
+    /* Hộp cảnh báo */
+    .warning-box {
+        background-color: #fff9e6; /* Nền vàng nhạt */
+        color: #856404;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border-left: 5px solid var(--gold-color);
+        margin: 25px 0;
+        font-size: 0.95rem;
+        text-align: left;
+    }
+
+    /* Nút bấm */
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-delete:hover {
+            background-color: #bb2d3b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+    .btn-back {
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+        background: white;
+        transition: 0.3s;
+    }
+
+        .btn-back:hover {
+            background-color: #e9ecef;
+            color: var(--navy-color);
+        }
+</style>
+
+<div class="container py-5">
+    <div class="delete-card">
+        <div class="delete-header">
+            <h3 class="mb-0 fw-bold text-uppercase" style="letter-spacing: 1px;">
+                <i class="bi bi-trash3-fill me-2 text-gold"></i>Xóa Loại Phòng
+            </h3>
+        </div>
+
+        <div class="card-body p-4 text-center">
+            <p class="text-muted mb-4 fs-5">Bạn có chắc chắn muốn xóa danh mục này?</p>
+
+            <div class="py-2">
+                <h2 class="fw-bold text-navy mb-1">@Model.Name</h2>
+                <span class="badge bg-light text-dark border">Mã số: #@Model.MaLoai</span>
+            </div>
+
+            <div class="warning-box shadow-sm">
+                <div class="d-flex">
+                    <i class="bi bi-exclamation-triangle-fill text-gold me-3 fs-4"></i>
+                    <div>
+                        <strong>Lưu ý quan trọng:</strong><br />
+                        Hành động này <span class="text-danger fw-bold">không thể hoàn tác</span>. Các phòng thuộc loại này có thể bị ảnh hưởng dữ liệu.
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a href="/AdminCategory/Index" class="btn btn-back px-4 py-2 fw-bold">
+                        <i class="bi bi-arrow-left me-1"></i> Hủy bỏ
+                    </a>
+
+                    <button type="submit" class="btn btn-delete px-4 py-2 fw-bold shadow-sm">
+                        <i class="bi bi-trash-fill me-1"></i> Xóa vĩnh viễn
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

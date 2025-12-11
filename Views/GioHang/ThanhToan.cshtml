@@ -1,0 +1,383 @@
+﻿@using QuanLyKhachSan.Models
+@model List<CTHD>
+
+@{
+    ViewBag.Title = "Thanh Toán & Đặt Phòng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+
+    if (Session["User"] == null)
+    {
+        Response.Redirect("~/Account/Login?returnUrl=/GioHang/ThanhToan");
+        return;
+    }
+
+    var user = Session["User"] as Account;
+    var listDichVu = ViewBag.ListDichVu as List<DichVu>;
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+    }
+
+    .text-navy {
+        color: var(--navy-color) !important;
+    }
+
+    .text-gold {
+        color: var(--gold-color) !important;
+    }
+
+    .bg-navy {
+        background-color: var(--navy-color) !important;
+        color: white;
+    }
+
+    .btn-gold {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            box-shadow: 0 4px 10px rgba(197, 160, 23, 0.4);
+        }
+
+    /* CSS cho Dịch vụ */
+    .service-item {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        transition: 0.2s;
+    }
+
+        .service-item:hover {
+            border-color: var(--gold-color);
+            background-color: #fffdf0;
+        }
+
+    .form-check-input:checked {
+        background-color: var(--gold-color);
+        border-color: var(--gold-color);
+    }
+
+    /* Nút xóa */
+    .btn-delete:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold text-center text-navy text-uppercase">
+        <i class="bi bi-shield-lock-fill me-2 text-gold"></i>Xác nhận đặt phòng
+    </h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Rất tiếc!</strong> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @using (Html.BeginForm("DatHang", "GioHang", FormMethod.Post, new { id = "BookingForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div id="liveAlertPlaceholder" class="mb-3"></div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold text-uppercase text-navy"
+                         style="border-bottom: 3px solid var(--gold-color);">
+                        <i class="bi bi-bag-check me-2"></i>Danh sách phòng (@ViewBag.TongSoLuong phòng)
+                    </div>
+
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="bg-light text-navy">
+                                <tr>
+                                    <th class="ps-4">Phòng</th>
+                                    <th class="text-center">SL</th>
+                                    <th class="text-end">Đơn giá/Đêm</th>
+                                    <th class="text-end pe-4">Thành tiền</th>
+                                    <th class="text-center" style="width: 50px;">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr class="room-item" data-price="@item.DonGia" data-qty="@item.SoLuong">
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded d-flex align-items-center justify-content-center me-3 bg-light"
+                                                         style="width:40px; height:40px;">
+                                                        <i class="bi bi-building text-secondary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <span class="fw-bold text-navy">@item.TenSP</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center fw-bold">@item.SoLuong</td>
+                                            <td class="text-end text-muted">@item.DonGia.ToString("#,##0")</td>
+
+                                            <td class="text-end pe-4 fw-bold text-navy row-total">
+                                                @((item.DonGia * (item.SoLuong)).ToString("#,##0"))
+                                            </td>
+
+                                            <td class="text-center">
+                                                <a href="@Url.Action("XoaGioHang", "GioHang", new { MaSP = item.MaSP })"
+                                                   class="btn btn-sm btn-outline-danger border-0 btn-delete rounded-circle"
+                                                   onclick="return confirm('Bạn có chắc muốn xóa phòng này?');"
+                                                   title="Xóa phòng này">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            Giỏ hàng trống. <a href="/Home/Index">Chọn phòng ngay!</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white fw-bold text-uppercase text-navy border-bottom-0">
+                        <i class="bi bi-stars me-2 text-warning"></i>Dịch vụ đi kèm
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="row g-3">
+                            @if (listDichVu != null)
+                            {
+                                foreach (var dv in listDichVu)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="form-check service-item p-3 ps-5">
+                                            <input class="form-check-input chk-service scale-125" type="checkbox"
+                                                   name="SelectedDichVu" value="@dv.MaDV"
+                                                   id="dv_@dv.MaDV" data-price="@dv.GiaTien">
+                                            <label class="form-check-label w-100 cursor-pointer" for="dv_@dv.MaDV">
+                                                <div class="d-flex justify-content-between fw-bold">
+                                                    <span>@dv.TenDV</span>
+                                                    <span class="text-gold">@dv.GiaTien.ToString("#,##0") đ</span>
+                                                </div>
+                                                <small class="text-muted">Đơn vị: @dv.DonVi</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 20px; z-index: 1;">
+                    <div class="card-header fw-bold text-center py-3 bg-navy text-gold">
+                        THÔNG TIN ĐẶT PHÒNG
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="mb-3 row g-2">
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-navy small">Ngày nhận</label>
+                                <input type="date" name="NgayNhan" id="NgayNhan" class="form-control"
+                                       value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-navy small">Ngày trả</label>
+                                <input type="date" name="NgayTra" id="NgayTra" class="form-control"
+                                       value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" required>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning d-flex justify-content-between align-items-center py-2 mb-3">
+                            <span class="small fw-bold"><i class="bi bi-moon-stars-fill me-1"></i>Số đêm lưu trú:</span>
+                            <span class="fw-bold fs-5" id="LabelSoDem">1 đêm</span>
+                        </div>
+
+                        <hr class="text-muted opacity-25">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-navy">Họ tên người đặt</label>
+                            <input type="text" name="HoTen" class="form-control" required
+                                   value="@(user != null ? user.HoTen : "")">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-navy">Số điện thoại</label>
+                            <input type="text" name="DienThoai" class="form-control" required
+                                   value="@(user != null ? user.SoDienThoai : "")">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-navy">Ghi chú</label>
+                            <textarea name="DiaChi" class="form-control" rows="2" placeholder="Yêu cầu đặc biệt...">@(user != null ? user.DiaChi : "")</textarea>
+                        </div>
+
+                        <hr class="text-muted opacity-25">
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="text-navy fw-bold fs-5">TỔNG CỘNG:</span>
+                            <span class="text-gold fw-bold fs-2" id="LabelTongTien">
+                                @ViewBag.TongTien.ToString("#,##0") đ
+                            </span>
+                            <input type="hidden" name="TongTien" id="InputTongTien" value="@ViewBag.TongTien" />
+                        </div>
+
+                        <button type="submit" class="btn btn-gold w-100 py-3 fw-bold text-uppercase fs-6 shadow">
+                            <i class="bi bi-check-circle-fill me-2"></i> Xác nhận đặt phòng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<script>
+    // 1. Hàm định dạng tiền tệ
+    function formatMoney(number) {
+        return number.toLocaleString('vi-VN') + " đ";
+    }
+
+    // 2. Hàm hiển thị thông báo lỗi đẹp (Bootstrap Alert)
+    function showAlert(message, type) {
+        const placeholder = document.getElementById('liveAlertPlaceholder');
+        if (!placeholder) return; // Phòng trường hợp chưa thêm div placeholder
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${type} alert-dismissible shadow-sm border-${type}" role="alert">`,
+            `   <div><i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Thông báo:</strong> ${message}</div>`,
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('');
+
+        placeholder.innerHTML = ''; // Xóa thông báo cũ trước khi hiện cái mới
+        placeholder.append(wrapper);
+    }
+
+    // 3. HÀM QUAN TRỌNG: GỌI AJAX KIỂM TRA PHÒNG TRỐNG
+    function CheckAvailability() {
+        var d1 = document.getElementById("NgayNhan").value;
+        var d2 = document.getElementById("NgayTra").value;
+        var btnSubmit = document.querySelector("button[type='submit']");
+        var placeholder = document.getElementById('liveAlertPlaceholder');
+
+        // Gọi API về Controller
+        fetch('/GioHang/CheckPhongTrong', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ ngayNhan: d1, ngayTra: d2 })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === false) {
+                    // TRƯỜNG HỢP 1: TRÙNG LỊCH / LỖI
+                    showAlert(data.message, 'danger'); // Hiện lỗi đỏ
+
+                    // Khóa nút đặt hàng
+                    if (btnSubmit) {
+                        btnSubmit.disabled = true;
+                        btnSubmit.innerHTML = '<i class="bi bi-x-circle me-2"></i> Hết phòng / Ngày không hợp lệ';
+                        btnSubmit.classList.add("btn-secondary");
+                        btnSubmit.classList.remove("btn-gold");
+                    }
+                } else {
+                    // TRƯỜNG HỢP 2: HỢP LỆ
+                    if (placeholder) placeholder.innerHTML = ""; // Xóa lỗi nếu có
+
+                    // Mở lại nút đặt hàng
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Xác nhận đặt phòng';
+                        btnSubmit.classList.remove("btn-secondary");
+                        btnSubmit.classList.add("btn-gold");
+                    }
+
+                    // Tính toán tiền (Chỉ tính khi ngày hợp lệ)
+                    CalculateTotal();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 4. HÀM TÍNH TOÁN TIỀN (Logic cũ của bạn)
+    function CalculateTotal() {
+        // 1. Tính số đêm
+        let d1 = new Date(document.getElementById("NgayNhan").value);
+        let d2 = new Date(document.getElementById("NgayTra").value);
+
+        let timeDiff = d2.getTime() - d1.getTime();
+        let nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        if (nights < 1) nights = 1;
+        document.getElementById("LabelSoDem").innerText = nights + " đêm";
+
+        // 2. Tính tiền phòng
+        let totalRoom = 0;
+        let roomRows = document.querySelectorAll(".room-item");
+
+        roomRows.forEach(row => {
+            let price = parseFloat(row.getAttribute("data-price"));
+            let qty = parseFloat(row.getAttribute("data-qty"));
+
+            let rowTotal = price * qty * nights;
+            totalRoom += rowTotal;
+
+            let rowTotalCell = row.querySelector(".row-total");
+            if (rowTotalCell) {
+                rowTotalCell.innerText = formatMoney(rowTotal);
+            }
+        });
+
+        // 3. Tính tiền dịch vụ
+        let totalService = 0;
+        let serviceChecks = document.querySelectorAll(".chk-service:checked");
+        serviceChecks.forEach(chk => {
+            totalService += parseFloat(chk.getAttribute("data-price"));
+        });
+
+        // 4. Tổng cộng
+        let grandTotal = totalRoom + totalService;
+
+        document.getElementById("LabelTongTien").innerText = formatMoney(grandTotal);
+        document.getElementById("InputTongTien").value = grandTotal;
+    }
+
+    // --- GÁN SỰ KIỆN ---
+
+    // Khi đổi ngày -> Gọi CheckAvailability (Kiểm tra trước, rồi mới tính tiền)
+    document.getElementById("NgayNhan").addEventListener("change", CheckAvailability);
+    document.getElementById("NgayTra").addEventListener("change", CheckAvailability);
+
+    // Khi chọn dịch vụ -> Chỉ cần gọi CalculateTotal (Không cần check phòng)
+    let services = document.querySelectorAll(".chk-service");
+    services.forEach(s => s.addEventListener("change", CalculateTotal));
+
+    // Chạy lần đầu khi tải trang
+    CheckAvailability();
+
+</script>

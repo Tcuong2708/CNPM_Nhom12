@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MAY HOTEL</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        /* --- BẢNG MÀU MỚI: ROYAL NAVY & GOLD (Xanh Navy & Vàng Kim) --- */
+        :root {
+            /* Màu chủ đạo: Xanh Navy đậm sang trọng */
+            --primary-color: #0F2942;
+            /* Màu điểm nhấn: Vàng kim loại (không quá rực) */
+            --accent-color: #C5A017;
+            /* Màu nền chính: Trắng xám nhẹ sạch sẽ */
+            --bg-light: #F8F9FA;
+            /* Màu nền footer: Dùng màu navy chủ đạo */
+            --footer-bg: var(--primary-color);
+            /* Màu chữ chính: Đen xám */
+            --text-dark: #2C3E50;
+            /* Màu chữ trên nền tối: Trắng kem */
+            --text-on-dark: #E9ECEF;
+        }
+
+        /* Cấu hình chung */
+        body {
+            font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.3s ease;
+        }
+
+            a:hover {
+                color: var(--accent-color);
+            }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background-color: #ffffff !important; /* Navbar trắng tinh khiết */
+            box-shadow: 0 2px 15px rgba(15, 41, 66, 0.1); /* Shadow màu navy nhạt */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--primary-color) !important; /* Brand màu Navy */
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            font-family: 'Playfair Display', serif; /* Nếu có thể, hãy thêm font này để sang hơn */
+        }
+
+            .navbar-brand i {
+                color: var(--accent-color); /* Icon của brand màu Vàng kim */
+            }
+
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+            padding: 10px 18px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link.active {
+                color: var(--accent-color) !important; /* Hover màu Vàng kim */
+            }
+
+        /* Icon giỏ hàng và user trên navbar */
+        .nav-icon-btn {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            transition: color 0.3s;
+        }
+
+            .nav-icon-btn:hover {
+                color: var(--accent-color);
+            }
+
+        /* Badge giỏ hàng */
+        .badge-cart-custom {
+            background-color: var(--accent-color); /* Nền vàng kim */
+            color: #fff;
+            font-size: 0.7rem;
+            border: 2px solid #fff; /* Viền trắng làm nổi bật badge */
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu-custom {
+            border: none;
+            box-shadow: 0 5px 25px rgba(15, 41, 66, 0.15);
+            border-radius: 0; /* Bo góc vuông vức hơn cho cảm giác hiện đại */
+            padding: 0;
+            margin-top: 15px; /* Tạo khoảng cách với navbar */
+        }
+
+        .dropdown-item {
+            font-weight: 500;
+            color: var(--primary-color);
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+            .dropdown-item:last-child {
+                border-bottom: none;
+            }
+
+            .dropdown-item:hover {
+                background-color: rgba(197, 160, 23, 0.1); /* Nền vàng nhạt khi hover */
+                color: var(--primary-color);
+            }
+
+            .dropdown-item i {
+                color: var(--accent-color); /* Icon trong dropdown màu Vàng kim */
+                margin-right: 10px;
+            }
+
+
+        /* Header cho phần Admin trong dropdown */
+        .dropdown-header-admin {
+            background-color: var(--primary-color); /* Nền Navy */
+            color: var(--accent-color); /* Chữ Vàng kim */
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-header-user {
+            background-color: #f2f2f2;
+            padding: 15px 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1; /* Đẩy footer xuống đáy */
+            padding-bottom: 60px;
+        }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toastSuccessAdd {
+            background-color: var(--primary-color); /* Nền Navy */
+            color: var(--text-on-dark);
+            border-left: 5px solid var(--accent-color); /* Viền trái màu Vàng kim */
+            border-radius: 4px;
+        }
+
+            #toastSuccessAdd .bi-check-circle-fill {
+                color: var(--accent-color);
+            }
+
+        /* --- FOOTER (Thay đổi lớn: Nền tối, chữ sáng) --- */
+        footer {
+            background-color: var(--footer-bg) !important; /* Nền Navy đậm */
+            color: var(--text-on-dark) !important; /* Chữ màu sáng */
+            padding-top: 4rem;
+            padding-bottom: 2rem;
+        }
+
+            footer h5 {
+                color: var(--accent-color); /* Tiêu đề footer màu Vàng kim */
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            footer p, footer a {
+                color: rgba(233, 236, 239, 0.8); /* Màu chữ sáng, hơi mờ */
+                font-weight: 300;
+            }
+
+                footer a:hover {
+                    color: var(--accent-color);
+                }
+
+            footer i {
+                color: var(--accent-color); /* Icon ở footer màu Vàng kim */
+            }
+
+            footer .social-icons a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: rgba(255,255,255,0.1);
+                color: var(--text-on-dark);
+                margin-right: 10px;
+                transition: all 0.3s;
+            }
+
+                footer .social-icons a:hover {
+                    background-color: var(--accent-color);
+                    color: var(--primary-color);
+                }
+
+            footer hr {
+                border-color: rgba(255,255,255,0.1);
+            }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/Index">
+                <i class="bi bi-buildings-fill me-2"></i>MAY HOTEL
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="/Home/Index">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Home/ThongTin">Thông tin</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/SanPham/Index">Phòng nghỉ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/Home/DanhGia">Đánh giá</a></li>
+
+                    <li class="nav-item ms-3 me-3 position-relative">
+                        <a class="nav-icon-btn" href="/GioHang/ThanhToan">
+                            <i class="bi bi-bag-fill"></i>
+                            <span id="cart-quantity" class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-cart-custom">
+                                @if (Session["GioHang"] != null)
+                                {
+                                    var list = (List<QuanLyKhachSan.Models.CTHD>)Session["GioHang"];
+                                    @list.Sum(x => x.SoLuong)
+                                }
+                                else
+                                {
+                                    @("0")
+                                }
+                            </span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-icon-btn dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if (Session["UserID"] != null)
+                            {
+                                <i class="bi bi-person-circle"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-person-circle" style="opacity: 0.6;"></i>
+                            }
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom shadow-lg border-0">
+                            @if (Session["User"] == null)
+                            {
+                                <li><a class="dropdown-item" href="/Account/Login"><i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập</a></li>
+                                <li><a class="dropdown-item" href="/Account/Register"><i class="bi bi-pencil-square me-2"></i>Đăng ký</a></li>
+                            }
+                            else
+                            {
+                                var user = (QuanLyKhachSan.Models.Account)Session["User"];
+
+                                <li>
+                                    <div class="dropdown-header-user px-3 py-2 fw-bold text-primary border-bottom">
+                                        Xin chào, @user.TenDangNhap
+                                    </div>
+                                </li>
+
+                                if (user.RoleID == 1)
+                                {
+                                    <li><div class="dropdown-header text-uppercase text-danger fw-bold mt-2" style="font-size: 0.75rem; padding-left: 1rem;">Quản trị hệ thống</div></li>
+
+                                    <li><a class="dropdown-item" href="/AdminProduct/Index"><i class="bi bi-houses-fill me-2 text-secondary"></i>Quản lý Phòng</a></li>
+                                    <li><a class="dropdown-item" href="/AdminCategory/Index"><i class="bi bi-tags-fill me-2 text-secondary"></i>Quản lý Loại phòng</a></li>
+                                    <li><a class="dropdown-item" href="/AdminService/Index"><i class="bi bi-stars me-2 text-secondary"></i>Quản lý Dịch vụ</a></li>
+                                    <li><a class="dropdown-item" href="/AdminUser/Index"><i class="bi bi-people-fill me-2 text-secondary"></i>Quản lý Tài khoản</a></li>
+                                    <li><a class="dropdown-item" href="/AdminStatistical/Index"><i class="bi bi-graph-up-arrow me-2 text-secondary"></i>Thống kê Doanh thu</a></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+
+                                if (user.RoleID == 1 || user.RoleID == 3)
+                                {
+                                    <li><div class="dropdown-header text-uppercase text-warning fw-bold mt-1" style="font-size: 0.75rem; padding-left: 1rem;">Nghiệp vụ lễ tân</div></li>
+
+                                    <li><a class="dropdown-item" href="/AdminOrder/Index"><i class="bi bi-journal-bookmark-fill me-2 text-warning"></i>Quản lý Đơn đặt</a></li>
+
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+
+                                <li><a class="dropdown-item" href="/Account/Information"><i class="bi bi-person-circle me-2"></i>Hồ sơ của tôi</a></li>
+                                <li><a class="dropdown-item text-danger fw-bold" href="/Account/Logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-buildings-fill me-2"></i>MAY HOTEL</h5>
+                    <p>Trải nghiệm sự sang trọng và tiện nghi bậc nhất. Chúng tôi cam kết mang đến cho bạn những kỳ nghỉ không thể nào quên.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p class="mb-2"><i class="bi bi-envelope me-2"></i> Email: MayHotel.hotel@gmail.com</p>
+                    <p class="mb-2"><i class="bi bi-telephone me-2"></i> Hotline: 1800 9327</p>
+                    <p><i class="bi bi-headset me-2"></i> CSKH: 038 8305167</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Kết nối & Địa chỉ</h5>
+                    <div class="social-icons mb-4">
+                        <a href="#"><i class="bi bi-facebook fs-5"></i></a>
+                        <a href="#"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#"><i class="bi bi-twitter fs-5"></i></a>
+                    </div>
+                    <p class="mb-2"><i class="bi bi-geo-alt me-2"></i> CN1: 140 Lê Trọng Tấn, TP. HCM</p>
+                    <p><i class="bi bi-geo-alt me-2"></i> CN2: 86 Tân Hòa Đông, Q.6, TP. HCM</p>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4" />
+            <div class="row">
+                <div class="col-12 text-center text-white-50 small">
+                    &copy; 2025 MAY HOTEL KINGS. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="toastSuccessAdd" class="toast align-items-center shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fs-6 fw-medium px-4 py-3 d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                    <div>Đặt phòng thành công!</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // --- XỬ LÝ AJAX THÊM GIỎ HÀNG ---
+            $('.btn-add-cart').click(function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var btn = $(this);
+                var originalText = btn.html();
+
+                // Hiệu ứng loading
+                btn.html('<span class="spinner-border spinner-border-sm me-2 text-warning"></span>Đang xử lý...').prop('disabled', true);
+
+                $.ajax({
+                    url: '/GioHang/ThemVaoGio',
+                    type: 'POST',
+                    data: { MaSP: id },
+                    success: function (result) {
+                        if (result.status == true) {
+                            // Cập nhật số lượng trên icon giỏ hàng
+                            $('#cart-quantity').text(result.soLuong);
+
+                            // Trả lại nút bấm
+                            btn.html(originalText).prop('disabled', false);
+
+                            // Hiển thị Toast thông báo thêm giỏ hàng
+                            var toastEl = document.getElementById("toastSuccessAdd");
+                            if (toastEl) {
+                                $('#toastMessage').text("Đã thêm phòng vào danh sách chọn!");
+                                var toast = new bootstrap.Toast(toastEl);
+                                toast.show();
+                            }
+                        }
+                    },
+                    error: function () {
+                        btn.html(originalText).prop('disabled', false);
+                        alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    }
+                });
+            });
+
+           var successMessage = '@(TempData["Success"] != null ? HttpUtility.JavaScriptStringEncode(TempData["Success"].ToString()) : "")';
+
+            if (successMessage) {
+                var toastEl = document.getElementById("toastSuccessAdd");
+                if (toastEl) {
+                    $('#toastMessage').text(successMessage);
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

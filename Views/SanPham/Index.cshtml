@@ -1,0 +1,369 @@
+﻿@model List<QuanLyKhachSan.Models.Phong>
+@{
+    ViewBag.Title = "Danh sách phòng nghỉ";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+
+    // --- LẤY THAM SỐ ROUTE (Đã sửa DepID -> MaLoai) ---
+    var routeParams = new RouteValueDictionary {
+        { "searchString", ViewBag.SearchString },
+        { "MaLoai", ViewBag.CurrentMaLoai },
+        { "priceRange", ViewBag.CurrentPriceRange }
+    };
+
+    // Biến tạm để check "active"
+    int currentMaLoai = ViewBag.CurrentMaLoai ?? 0;
+    string currentPrice = ViewBag.CurrentPriceRange ?? "";
+}
+
+<style>
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+        --bg-light: #f8f9fa;
+    }
+
+    /* --- SIDEBAR FILTER --- */
+    .filter-card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-bottom: 20px;
+        background: white;
+    }
+
+    .filter-header {
+        background-color: var(--navy-color);
+        color: white;
+        padding: 15px 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        border-bottom: 3px solid var(--gold-color);
+    }
+
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        color: #555;
+        transition: all 0.2s;
+    }
+
+        .list-group-item:hover {
+            background-color: #fff9e6; /* Màu nền vàng rất nhạt */
+            color: var(--gold-color);
+            padding-left: 25px; /* Hiệu ứng đẩy sang phải */
+        }
+
+        .list-group-item.active {
+            background-color: var(--gold-color);
+            border-color: var(--gold-color);
+            color: white;
+            font-weight: 600;
+        }
+
+    /* --- PRODUCT CARD --- */
+    .room-card {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s;
+        background: white;
+    }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(15, 41, 66, 0.15);
+            border-color: var(--gold-color);
+        }
+
+    .room-img-wrapper {
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .room-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .room-card:hover .room-img {
+        transform: scale(1.1);
+    }
+
+    .room-price {
+        color: var(--gold-color);
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
+    /* --- BUTTONS --- */
+    .btn-search {
+        background-color: var(--navy-color);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
+
+        .btn-search:hover {
+            background-color: #1a3c5e;
+            color: white;
+        }
+
+    .btn-detail {
+        border: 1px solid var(--navy-color);
+        color: var(--navy-color);
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-detail:hover {
+            background-color: var(--navy-color);
+            color: white;
+        }
+
+    .btn-book {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-book:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    /* --- PAGINATION --- */
+    .page-link {
+        color: var(--navy-color);
+        border: 1px solid #dee2e6;
+    }
+
+        .page-link:hover {
+            background-color: #e9ecef;
+            color: var(--navy-color);
+        }
+
+    .page-item.active .page-link {
+        background-color: var(--navy-color);
+        border-color: var(--navy-color);
+        color: var(--gold-color);
+    }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-uppercase" style="color: var(--navy-color); letter-spacing: 1px;">
+            <i class="bi bi-grid-fill me-2 text-gold"></i>Danh Sách Phòng Nghỉ
+        </h2>
+        <div style="width: 60px; height: 3px; background-color: var(--gold-color); margin: 10px auto;"></div>
+    </div>
+
+    <div class="card shadow-sm mb-4 border-0 bg-light">
+        <div class="card-body p-4">
+            @using (Html.BeginForm("Index", "SanPham", FormMethod.Get))
+            {
+                // Giữ lại các tham số lọc khi tìm kiếm
+                @Html.Hidden("MaLoai", (int?)ViewBag.CurrentMaLoai)
+                @Html.Hidden("priceRange", (string)ViewBag.CurrentPriceRange)
+
+                <div class="row gx-3 align-items-center justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            @Html.TextBox("searchString", ViewBag.SearchString as string,
+                                new { @class = "form-control border-start-0 py-2", id = "searchString", placeholder = "Tìm theo tên phòng..." })
+                            <button type="submit" class="btn btn-search fw-bold text-uppercase">
+                                Tìm Kiếm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 order-md-1 order-2 mt-4 mt-md-0">
+
+            <div class="filter-card">
+                <div class="filter-header">
+                    <i class="bi bi-bookmark-star-fill me-2"></i>Loại Phòng
+                </div>
+                <div class="list-group list-group-flush">
+                    @Html.ActionLink("Tất cả", "Index",
+                        new { MaLoai = "", priceRange = ViewBag.CurrentPriceRange, searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentMaLoai == 0 ? "active" : "") })
+
+                    @if (ViewBag.ListLoai != null)
+                    {
+                        foreach (var loai in (List<QuanLyKhachSan.Models.Loai>)ViewBag.ListLoai)
+                        {
+                            @Html.ActionLink(loai.Name, "Index",
+                                new { MaLoai = loai.MaLoai, priceRange = ViewBag.CurrentPriceRange, searchString = ViewBag.SearchString },
+                                new { @class = "list-group-item list-group-item-action " + (currentMaLoai == loai.MaLoai ? "active" : "") })
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="filter-card">
+                <div class="filter-header">
+                    <i class="bi bi-cash-stack me-2"></i>Khoảng Giá
+                </div>
+                <div class="list-group list-group-flush">
+                    @Html.ActionLink("Tất cả mức giá", "Index",
+                        new { MaLoai = ViewBag.CurrentMaLoai, priceRange = "", searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentPrice == "" ? "active" : "") })
+
+                    @Html.ActionLink("Dưới 500k", "Index",
+                        new { MaLoai = ViewBag.CurrentMaLoai, priceRange = "lt500", searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentPrice == "lt500" ? "active" : "") })
+
+                    @Html.ActionLink("500k - 1 triệu", "Index",
+                        new { MaLoai = ViewBag.CurrentMaLoai, priceRange = "500-1000", searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentPrice == "500-1000" ? "active" : "") })
+
+                    @Html.ActionLink("1 triệu - 2 triệu", "Index",
+                        new { MaLoai = ViewBag.CurrentMaLoai, priceRange = "1000-2000", searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentPrice == "1000-2000" ? "active" : "") })
+
+                    @Html.ActionLink("Trên 2 triệu", "Index",
+                        new { MaLoai = ViewBag.CurrentMaLoai, priceRange = "gt2000", searchString = ViewBag.SearchString },
+                        new { @class = "list-group-item list-group-item-action " + (currentPrice == "gt2000" ? "active" : "") })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-9 order-md-2 order-1">
+
+            @if (Model != null && Model.Count > 0)
+            {
+                <div class="row gx-4 gy-4">
+                    @foreach (var phong in Model)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card h-100 room-card">
+                                <div class="room-img-wrapper">
+                                    <a href="@Url.Action("Details", "SanPham", new { id = phong.ID })">
+                                        <img src="@Url.Content(phong.ImageUrl)" class="card-img-top room-img" alt="@phong.Name">
+                                    </a>
+                                </div>
+
+                                <div class="card-body d-flex flex-column text-center p-3">
+                                    <small class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">
+                                        @(phong.Loai != null ? phong.Loai.Name : "Luxury Room")
+                                    </small>
+
+                                    <h5 class="card-title fw-bold text-truncate mb-2">
+                                        <a href="@Url.Action("Details", "SanPham", new { id = phong.ID })" class="text-decoration-none" style="color: var(--navy-color);">
+                                            @phong.Name
+                                        </a>
+                                    </h5>
+
+                                    <p class="room-price mb-3">
+                                        @phong.Price.ToString("N0") <small class="text-muted fw-normal fs-6">VNĐ</small>
+                                    </p>
+
+                                    <div class="mt-auto row g-2">
+                                        <div class="col-6">
+                                            @Html.ActionLink("Chi tiết", "Details", "SanPham", new { id = phong.ID }, new { @class = "btn btn-detail w-100 btn-sm py-2" })
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-book w-100 btn-sm py-2 btn-add-cart shadow-sm" data-id="@phong.ID">
+                                                <i class="bi bi-cart-plus me-1"></i> Đặt ngay
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                @{ routeParams["page"] = ViewBag.CurrentPage - 1; }
+                                <a class="page-link" href="@Url.Action("Index", routeParams)"><i class="bi bi-chevron-left"></i></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            if (i == ViewBag.CurrentPage)
+                            {
+                                <li class="page-item active"><span class="page-link">@i</span></li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    @{ routeParams["page"] = i; }
+                                    <a class="page-link" href="@Url.Action("Index", routeParams)">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                @{ routeParams["page"] = ViewBag.CurrentPage + 1; }
+                                <a class="page-link" href="@Url.Action("Index", routeParams)"><i class="bi bi-chevron-right"></i></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted opacity-25"></i>
+                    <h3 class="mt-3 text-muted">Không tìm thấy phòng phù hợp.</h3>
+                    <p class="text-muted">Vui lòng thử lại với từ khóa khác hoặc bỏ chọn bộ lọc.</p>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary mt-2">Xóa bộ lọc</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tự động submit form tìm kiếm khi người dùng xóa trắng ô input
+    const box = document.getElementById("searchString");
+    let timer;
+
+    if (box) {
+        box.addEventListener("input", function () {
+            clearTimeout(timer);
+            if (this.value.trim() === "") {
+                timer = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            }
+        });
+    }
+</script>

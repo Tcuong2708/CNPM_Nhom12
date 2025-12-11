@@ -1,0 +1,105 @@
+﻿@model QuanLyKhachSan.Models.Phong
+
+@{
+    ViewBag.Title = "Cập nhật phòng";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    .admin-form-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+        border: 1px solid #eee;
+    }
+
+    .admin-header {
+        background-color: #0F2942; /* Màu Navy */
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 3px solid #C5A017; /* Màu Vàng */
+    }
+
+    .btn-gold {
+        background-color: #C5A017;
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-gold:hover {
+            background-color: #a68512;
+            color: white;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card admin-form-card">
+                <div class="admin-header">
+                    <h3 class="mb-0 fw-bold text-uppercase">
+                        <i class="bi bi-pencil-square me-2 text-warning"></i>Cập Nhật Phòng
+                    </h3>
+                </div>
+
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Edit", "AdminProduct", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.ID)
+                        @Html.HiddenFor(m => m.ImageUrl) <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Tên Phòng <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Price, new { @class = "form-control", type = "number", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Loại phòng <span class="text-danger">*</span></label>
+
+                                @Html.DropDownListFor(m => m.MaLoai,
+                                                      (SelectList)ViewBag.ListLoai,
+                                                      new { @class = "form-control form-select" })
+
+                                @Html.ValidationMessageFor(m => m.MaLoai, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Hình ảnh</label>
+                                <input type="file" name="imageFile" class="form-control" />
+                                <div class="mt-2">
+                                    <small class="text-muted">Ảnh hiện tại:</small><br />
+                                    <img src="@Url.Content(Model.ImageUrl)" style="height: 50px; border-radius: 4px; border: 1px solid #ddd;" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">Mô tả chi tiết</label>
+                                @Html.TextAreaFor(m => m.Detail, new { @class = "form-control", rows = 4 })
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <a href="/AdminProduct/Index" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-gold px-4 shadow-sm">
+                                <i class="bi bi-save me-2"></i> LƯU THAY ĐỔI
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,201 @@
+﻿@model QuanLyKhachSan.Models.Account
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    /* Khai báo bảng màu dùng chung */
+    :root {
+        --navy-color: #0F2942;
+        --gold-color: #C5A017;
+        --gold-hover: #a68512;
+    }
+
+    /* Wrapper bao quanh */
+    .register-wrapper {
+        background-color: #f8f9fa;
+        padding: 60px 0;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Card chứa form */
+    .card-custom {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(15, 41, 66, 0.15); /* Bóng đổ màu xanh đen nhạt */
+        overflow: hidden;
+        background: white;
+    }
+
+    /* Header màu Xanh Navy + Viền Vàng */
+    .card-header-custom {
+        background-color: var(--navy-color);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        border-bottom: 4px solid var(--gold-color);
+    }
+
+        .card-header-custom h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-header-custom p {
+            color: rgba(255,255,255,0.8);
+            margin-top: 5px;
+        }
+
+    /* Form Label */
+    .form-label {
+        font-weight: 600;
+        color: var(--navy-color);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* Input Fields */
+    .form-control, .form-select {
+        border-radius: 6px;
+        padding: 12px 15px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s;
+    }
+
+        /* Hiệu ứng Focus màu Vàng Kim */
+        .form-control:focus, .form-select:focus {
+            border-color: var(--gold-color);
+            box-shadow: 0 0 0 0.2rem rgba(197, 160, 23, 0.25);
+        }
+
+    /* Nút Đăng Ký màu Vàng Kim */
+    .btn-register {
+        background-color: var(--gold-color);
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 6px;
+        width: 100%;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+        .btn-register:hover {
+            background-color: var(--gold-hover);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(197, 160, 23, 0.3);
+        }
+
+    /* Link đăng nhập */
+    .link-login {
+        color: var(--navy-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+        .link-login:hover {
+            color: var(--gold-color);
+            text-decoration: underline;
+        }
+
+    .text-danger {
+        font-size: 0.85rem;
+        margin-top: 4px;
+        display: block;
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card card-custom">
+
+                    <div class="card-header-custom">
+                        <h2><i class="bi bi-person-plus-fill me-2"></i>Đăng ký thành viên</h2>
+                        <p class="mb-0 small">Trở thành thành viên thân thiết để nhận ưu đãi</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger text-center shadow-sm border-0 bg-danger text-white">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>@ViewBag.Error
+                            </div>
+                        }
+
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Tên đăng nhập <span class="text-danger d-inline">*</span></label>
+                                    @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control", placeholder = "Ví dụ: nguyenvan_a", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Mật khẩu <span class="text-danger d-inline">*</span></label>
+                                    @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu...", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Họ tên <span class="text-danger d-inline">*</span></label>
+                                    @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control", placeholder = "Nguyễn Văn A", required = "required" })
+                                    @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Số điện thoại</label>
+                                    @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control", type = "number", placeholder = "09xx..." })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ngày sinh</label>
+                                    @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control" })
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Giới tính</label>
+                                    @Html.DropDownListFor(m => m.GioiTinh,
+                                        new SelectList(new[] { "Nam", "Nữ", "Khác" }),
+                                        "-- Chọn giới tính --",
+                                        new { @class = "form-select" }
+                                    )
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Địa chỉ</label>
+                                @Html.TextAreaFor(m => m.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ liên hệ...", rows = "2" })
+                            </div>
+
+                            <button type="submit" class="btn btn-register shadow-sm">
+                                <i class="bi bi-check-lg me-1"></i> Đăng Ký Ngay
+                            </button>
+
+                            <div class="text-center mt-4 pt-3 border-top">
+                                <small class="text-muted">Bạn đã có tài khoản?</small>
+                                <a href="@Url.Action("Login", "Account")" class="link-login ms-1">Đăng nhập tại đây</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
