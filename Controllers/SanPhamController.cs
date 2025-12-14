@@ -18,19 +18,18 @@ namespace QuanLyKhachSan.Controllers
         {
             var phong = db.Phong.Include(e => e.Loai).AsQueryable();
 
-            // 1. Tìm kiếm theo tên
-            if (!string.IsNullOrEmpty(searchString))
+            // Tìm kiếm theo TÊN LOẠI PHÒNG
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                string searchLower = searchString.ToLower();
-                phong = phong.Where(e => e.Name.ToLower().Contains(searchLower));
+                string searchLower = searchString.Trim().ToLower();
+                phong = phong.Where(p => p.Loai.Name.ToLower().Contains(searchLower));
             }
 
-            // 2. Lọc theo Loại phòng (Sửa DepID -> MaLoai)
+            // Lọc theo mã loại (dropdown)
             if (MaLoai != null)
             {
-                phong = phong.Where(b => b.MaLoai == MaLoai);
+                phong = phong.Where(p => p.MaLoai == MaLoai);
             }
-
             // 3. Lọc theo Giá (Cập nhật mức giá phù hợp với Khách sạn)
             switch (priceRange)
             {
