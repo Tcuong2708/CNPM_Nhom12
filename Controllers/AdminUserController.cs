@@ -19,14 +19,16 @@ namespace QuanLyKhachSan.Controllers
             if (user.RoleID == 1) return true;
             return false;
         }
-
         // 1. DANH SÁCH USER
         public ActionResult Index()
         {
             if (!CheckAdmin()) return RedirectToAction("Index", "Home");
-            return View(db.Account.ToList());
-        }
 
+            // SỬA Ở ĐÂY: Thêm lệnh .Where() để lọc
+            // Chỉ lấy những tài khoản có Status bằng 1 (Hoạt động)
+            // Những tài khoản có Status = 0 (Đã xóa) hoặc Null sẽ bị ẩn đi
+            return View(db.Account.Where(u => u.Status == 1).ToList());
+        }
         // 2. THÊM MỚI (GET) - Chạy khi mở trang
         /// 1. Hàm GET: Chạy khi mới mở trang
         public ActionResult Create()
@@ -123,15 +125,29 @@ namespace QuanLyKhachSan.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            // 1. Kiểm tra quyền Admin (giữ nguyên code cũ của bạn)
             if (!CheckAdmin()) return RedirectToAction("Index", "Home");
+
+            // 2. Tìm tài khoản cần xóa
             var user = db.Account.Find(id);
+
             if (user != null)
             {
-                db.Account.Remove(user);
+                // THAY ĐỔI Ở ĐÂY: Không xóa, chỉ đổi trạng thái
+                // Quy ước: Status = 0 nghĩa là đã bị "xóa" (vô hiệu hóa)
+                user.Status = 0;
+
+                // Báo cho Entity Framework biết dòng này đang được sửa
+                db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+
+                // Lưu lại
                 db.SaveChanges();
             }
+
+            // 3. Quay về trang danh sách
             return RedirectToAction("Index");
         }
 

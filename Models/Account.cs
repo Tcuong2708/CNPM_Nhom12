@@ -27,7 +27,11 @@ namespace QuanLyKhachSan.Models
         public DateTime? NgayTaoTK { get; set; } = DateTime.Now;
 
         public int RoleID { get; set; }
-
+        // --- CẬP NHẬT MỚI: Thêm cột Status ---
+        // 1: Hoạt động (Active)
+        // 0: Đã khóa/Xóa (Deleted)
+        // Gán mặc định = 1 để khi tạo mới thì tài khoản dùng được ngay
+        public int? Status { get; set; } = 1;
         [ForeignKey("RoleID")]
         public virtual Role Role { get; set; }
     }

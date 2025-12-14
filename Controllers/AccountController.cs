@@ -78,25 +78,37 @@ namespace QuanLyKhachSan.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 1. Kiểm tra DB
+                // --- SỬA Ở ĐÂY ---
+                // Thêm điều kiện: u.Status == 1 (Chỉ lấy tài khoản đang hoạt động)
                 var user = db.Account.FirstOrDefault(u =>
-                    u.TenDangNhap == model.TenDangNhap && u.MatKhau == model.MatKhau);
+                    u.TenDangNhap == model.TenDangNhap &&
+                    u.MatKhau == model.MatKhau &&
+                    u.Status == 1);
 
                 if (user != null)
                 {
-                    // --- SỬA ĐOẠN NÀY ---
-
-                    // Lưu UserID để khớp với điều kiện @if trong Layout
-                    // (Lưu ý: Thay 'MaTaiKhoan' bằng tên cột khóa chính thực tế trong bảng Account của bạn, ví dụ: ID, AccountID...)
+                    // Đăng nhập thành công
                     Session["UserID"] = user.IDTaiKhoan;
-
-                    // Lưu thêm cả đối tượng User để sau này muốn hiện "Xin chào, [Tên]" thì lấy ra dùng
                     Session["User"] = user;
-
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    // Kiểm tra thêm để báo lỗi chính xác hơn (Optional)
+                    var lockedUser = db.Account.FirstOrDefault(u =>
+                        u.TenDangNhap == model.TenDangNhap &&
+                        u.MatKhau == model.MatKhau &&
+                        u.Status == 0);
 
-                ViewBag.Error = "Sai tài khoản hoặc mật khẩu";
+                    if (lockedUser != null)
+                    {
+                        ViewBag.Error = "Tài khoản này đã bị khóa hoặc ngừng hoạt động.";
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Sai tài khoản hoặc mật khẩu.";
+                    }
+                }
             }
             return View();
         }
@@ -125,8 +137,12 @@ namespace QuanLyKhachSan.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Gán mặc định role cho User
+                // Gán mặc định role cho User (Khách hàng)
                 model.RoleID = 2;
+
+                // --- SỬA Ở ĐÂY ---
+                // Gán mặc định trạng thái là Hoạt động
+                model.Status = 1;
 
                 db.Account.Add(model);
                 db.SaveChanges();
