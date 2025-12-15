@@ -37,7 +37,7 @@ namespace QuanLyKhachSan.Controllers
                     phong = phong.Where(b => b.Price < 500000);
                     break;
 
-                case "500-1000": // 500k - 1 triệu
+                case "500-1000": // 500k - 1 triệu 
                     phong = phong.Where(b => b.Price >= 500000 && b.Price < 1000000);
                     break;
 

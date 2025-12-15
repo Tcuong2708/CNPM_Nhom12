@@ -1,9 +1,74 @@
-﻿@model IEnumerable<QuanLyKhachSan.Models.DichVu>
+﻿
+@model IEnumerable<QuanLyKhachSan.Models.DichVu>
 
 @{
     ViewBag.Title = "Quản lý Dịch vụ";
     Layout = "~/Views/Shared/_LayoutPage.cshtml";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    /* --- BẢNG MÀU TÙY CHỈNH (NAVY & GOLD) --- */
+    :root {
+        --color-navy: #0f172a; /* Xanh than đậm */
+        --color-gold: #d4af37; /* Vàng kim loại */
+        --color-gold-hover: #b4932a;
+    }
+
+    /* --- CÁC CLASS MÀU SẮC --- */
+    .text-navy {
+        color: var(--color-navy) !important;
+    }
+
+    .bg-navy {
+        background-color: var(--color-navy) !important;
+        color: white;
+    }
+
+    /* Tinh chỉnh nút màu vàng */
+    .btn-gold {
+        background-color: var(--color-gold);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-gold:hover {
+            background-color: var(--color-gold-hover);
+            color: white;
+            transform: translateY(-2px); /* Hiệu ứng nhấc nút lên nhẹ */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+    /* Tinh chỉnh tiêu đề cột bảng */
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border-bottom: none;
+    }
+
+    /* Hiệu ứng hover cho dòng trong bảng */
+    .table-hover tbody tr:hover {
+        background-color: rgba(212, 175, 55, 0.05); /* Màu vàng rất nhạt khi di chuột */
+    }
+
+    /* Badge đơn vị tính */
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+    }
+
+    /* Ghi đè màu warning mặc định cho đồng bộ */
+    .text-warning {
+        color: #b8860b !important; /* Dark GoldenRod */
+    }
+
+    .border-warning {
+        border-color: var(--color-gold) !important;
+    }
+</style>
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -38,7 +103,7 @@
                         <th class="ps-4 py-3">Tên Dịch vụ</th>
                         <th class="text-end">Đơn giá</th>
                         <th class="text-center">Đơn vị tính</th>
-                        <th class="text-center">Thao tác</th>
+                        <th class="text-center" style="width: 150px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +129,10 @@
                     else
                     {
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Chưa có dịch vụ nào.</td>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                Chưa có dịch vụ nào trong hệ thống.
+                            </td>
                         </tr>
                     }
                 </tbody>

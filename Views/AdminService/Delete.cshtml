@@ -5,31 +5,87 @@
     Layout = "~/Views/Shared/_LayoutPage.cshtml";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    /* --- BẢNG MÀU --- */
+    :root {
+        --color-navy: #0f172a;
+        --color-gold: #d4af37;
+    }
+
+    /* Text colors */
+    .text-navy {
+        color: var(--color-navy) !important;
+    }
+
+    /* Ghi đè màu warning thành màu Gold cho giá tiền */
+    .text-warning {
+        color: #b8860b !important;
+    }
+
+    /* Hiệu ứng bóng đổ mềm cho Card */
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+
+    /* Box thông tin chi tiết */
+    .info-box {
+        background-color: #f8f9fa;
+        border-left: 5px solid #dc3545; /* Viền đỏ bên trái */
+        border-radius: 4px;
+    }
+</style>
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card border-danger shadow-lg">
+            <div class="card border-0 shadow-lg">
                 <div class="card-header bg-danger text-white py-3 text-center">
-                    <h4 class="mb-0 fw-bold text-uppercase"><i class="bi bi-trash-fill me-2"></i>Xác nhận xóa</h4>
+                    <h4 class="mb-0 fw-bold text-uppercase">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Xác nhận xóa
+                    </h4>
                 </div>
-                <div class="card-body p-4 text-center">
-                    <i class="bi bi-exclamation-circle text-danger" style="font-size: 4rem;"></i>
-                    <h5 class="mt-3 text-navy">Bạn có chắc chắn muốn xóa dịch vụ này không?</h5>
-                    <p class="text-muted">Hành động này không thể hoàn tác.</p>
 
-                    <div class="alert alert-light border d-inline-block text-start px-5 py-3 mt-2">
-                        <p class="mb-1"><strong>Tên dịch vụ:</strong> @Model.TenDV</p>
-                        <p class="mb-1"><strong>Giá tiền:</strong> <span class="text-warning fw-bold">@Model.GiaTien.ToString("#,##0") đ</span></p>
-                        <p class="mb-0"><strong>Đơn vị:</strong> @Model.DonVi</p>
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4 text-danger opacity-75">
+                        <i class="bi bi-trash3" style="font-size: 5rem;"></i>
+                    </div>
+
+                    <h5 class="text-navy fw-bold mb-3">Bạn có chắc chắn muốn xóa dịch vụ này?</h5>
+                    <p class="text-muted mb-4">
+                        Hành động này sẽ xóa vĩnh viễn dữ liệu khỏi hệ thống và <br />
+                        <strong>không thể hoàn tác</strong>.
+                    </p>
+
+                    <div class="info-box text-start px-4 py-3 mb-4 shadow-sm">
+                        <div class="row mb-2">
+                            <div class="col-4 text-muted">ID Dịch vụ:</div>
+                            <div class="col-8 fw-bold text-dark">#@Model.MaDV</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4 text-muted">Tên dịch vụ:</div>
+                            <div class="col-8 fw-bold text-navy text-uppercase">@Model.TenDV</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-4 text-muted">Đơn giá:</div>
+                            <div class="col-8 fw-bold text-warning fs-5">@Model.GiaTien.ToString("#,##0") VNĐ</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 text-muted">Đơn vị tính:</div>
+                            <div class="col-8">@Model.DonVi</div>
+                        </div>
                     </div>
 
                     @using (Html.BeginForm())
                     {
                         @Html.AntiForgeryToken()
-                        <div class="d-flex justify-content-center gap-3 mt-4">
-                            <a href="@Url.Action("Index")" class="btn btn-secondary px-4">Không, quay lại</a>
+                        <div class="d-flex justify-content-center gap-3 mt-4 border-top pt-4">
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary px-4 fw-bold">
+                                <i class="bi bi-x-lg me-2"></i>Hủy bỏ
+                            </a>
                             <button type="submit" class="btn btn-danger px-4 fw-bold">
-                                <i class="bi bi-trash me-2"></i>Đồng ý xóa
+                                <i class="bi bi-trash-fill me-2"></i>Xóa vĩnh viễn
                             </button>
                         </div>
                     }
