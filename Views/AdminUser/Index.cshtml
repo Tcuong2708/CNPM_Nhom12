@@ -120,15 +120,15 @@
                                     </td>
 
                                     <td class="text-center">
-                                        @if (u.RoleID == 1)
+                                        @if (u.RoleID == 1) //  Admin
                                         {
                                             <span class="badge badge-role-admin rounded-pill px-3">ADMIN</span>
                                         }
-                                        else if (u.RoleID == 3)
+                                        else if (u.RoleID == 3) // Lễ tân
                                         {
                                             <span class="badge badge-role-user rounded-pill px-3">Lễ tân</span>
                                         }
-                                        else
+                                        else //Khách hàng 
                                         {
                                         <span class="badge badge-role-user rounded-pill px-3">Khách hàng</span>
                                         }

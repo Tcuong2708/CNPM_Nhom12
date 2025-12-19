@@ -150,6 +150,49 @@ namespace QuanLyKhachSan.Controllers
             }
             return View();
         }
+        // 1. GET: Hiển thị form
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
 
+        // 2. POST: Xử lý đổi mật khẩu
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(string tenDangNhap, string soDienThoai, string matKhauMoi, string xacNhanMatKhau)
+        {
+            // Kiểm tra nhập thiếu thông tin
+            if (string.IsNullOrEmpty(tenDangNhap) || string.IsNullOrEmpty(soDienThoai) || string.IsNullOrEmpty(matKhauMoi))
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin!";
+                return View();
+            }
+
+            // Kiểm tra xác nhận mật khẩu
+            if (matKhauMoi != xacNhanMatKhau)
+            {
+                ViewBag.Error = "Mật khẩu xác nhận không khớp!";
+                return View();
+            }
+
+            // LOGIC CHÍNH: Tìm user có Tên đăng nhập và SĐT khớp nhau
+            // (Dù tên đăng nhập có là email hay gì đi nữa thì vẫn so sánh với cột TenDangNhap)
+            var user = db.Account.FirstOrDefault(x => x.TenDangNhap == tenDangNhap && x.SoDienThoai == soDienThoai);
+
+            if (user != null)
+            {
+                // Tìm thấy -> Cập nhật mật khẩu mới
+                user.MatKhau = matKhauMoi;
+                db.SaveChanges();
+
+                return RedirectToAction("Login", "Account", new { message = "Đổi mật khẩu thành công! Hãy đăng nhập lại." });
+            }
+            else
+            {
+                // Không khớp thông tin
+                ViewBag.Error = "Tên đăng nhập hoặc Số điện thoại không chính xác!";
+                return View();
+            }
+        }
     }
 }
