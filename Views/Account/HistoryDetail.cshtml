@@ -1,0 +1,185 @@
+﻿@model QuanLyKhachSan.Models.HoaDon
+
+@{
+    ViewBag.Title = "Chi tiết đơn đặt phòng #" + Model.MaHD;
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    /* --- NAVY & GOLD THEME --- */
+    :root {
+        --color-navy: #0f172a;
+        --color-gold: #d4af37;
+    }
+
+    .bg-navy {
+        background-color: var(--color-navy);
+        color: white;
+    }
+
+    .text-navy {
+        color: var(--color-navy);
+    }
+
+    .text-gold {
+        color: var(--color-gold);
+        font-weight: bold;
+    }
+
+    .invoice-card {
+        border: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .invoice-header {
+        background-color: var(--color-navy);
+        padding: 20px 30px;
+        color: white;
+        border-bottom: 5px solid var(--color-gold);
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--color-navy);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 8px;
+    }
+
+    .room-thumb {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #eee;
+    }
+
+    .total-row {
+        background-color: #f8fafc;
+        border-top: 2px dashed #cbd5e1;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="mb-3">
+        <a href="@Url.Action("History", "Account")" class="text-decoration-none text-muted fw-bold">
+            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="invoice-card bg-white">
+        <div class="invoice-header d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0 text-uppercase fw-bold">Chi tiết đặt phòng</h4>
+                <small class="opacity-75">Mã hóa đơn: #@Model.MaHD</small>
+            </div>
+            <div class="text-end">
+                <div class="fs-5 fw-bold">@Model.NgayDat.ToString("dd/MM/yyyy")</div>
+                @if (Model.NgayTra < DateTime.Now)
+                {
+                    <span class="badge bg-success border border-white">Đã hoàn tất</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark border border-white">Sắp tới</span>
+                }
+            </div>
+        </div>
+
+        <div class="p-4 p-md-5">
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <h5 class="section-title">Thông tin khách hàng</h5>
+                    <p class="mb-1"><strong>Họ tên:</strong> @Model.HoTen</p>
+                    <p class="mb-1"><strong>SĐT:</strong> @Model.DienThoai</p>
+                    <p class="mb-0"><strong>Địa chỉ:</strong> @(string.IsNullOrEmpty(Model.DiaChi) ? "Chưa cập nhật" : Model.DiaChi)</p>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <h5 class="section-title text-md-end">Thời gian lưu trú</h5>
+                    <p class="mb-1"><i class="bi bi-box-arrow-in-right text-success me-2"></i>Nhận phòng: <strong>@Model.NgayNhan.ToString("dd/MM/yyyy")</strong></p>
+                    <p class="mb-0"><i class="bi bi-box-arrow-left text-danger me-2"></i>Trả phòng: <strong>@Model.NgayTra.ToString("dd/MM/yyyy")</strong></p>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h5 class="section-title">Danh sách phòng đặt</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Phòng</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.CTHDs)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if (item.Phong != null && !string.IsNullOrEmpty(item.Phong.ImageUrl))
+                                            {
+                                                <img src="@Url.Content(item.Phong.ImageUrl)" class="room-thumb me-3" alt="Room">
+                                            }
+                                            else
+                                            {
+                                                <div class="room-thumb me-3 d-flex align-items-center justify-content-center bg-light">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                            }
+                                            <div>
+                                                <div class="fw-bold text-navy">
+                                                    @(item.Phong != null ? item.Phong.Name : "Phòng đã bị xóa")
+                                                </div>
+                                                <small class="text-muted">Loại: @(item.Phong != null && item.Phong.Loai != null ? item.Phong.Loai.Name : "-")</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">@item.SoLuong</td>
+                                    <td class="text-end">@item.DonGia.ToString("#,##0")</td>
+                                    <td class="text-end fw-bold">@((item.DonGia * (item.SoLuong)).ToString("#,##0")) đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @if (Model.CT_DichVus != null && Model.CT_DichVus.Any())
+            {
+                <div class="mb-4">
+                    <h5 class="section-title">Dịch vụ sử dụng</h5>
+                    <table class="table table-sm table-borderless">
+                        @foreach (var dv in Model.CT_DichVus)
+                        {
+                            <tr>
+                                <td style="width: 60%">
+                                    <i class="bi bi-check2-circle text-gold me-2"></i>
+                                    @(dv.DichVu != null ? dv.DichVu.TenDV : "Dịch vụ đã xóa")
+                                </td>
+                                <td class="text-end text-muted">
+                                    @dv.GiaTien.ToString("#,##0") <small>đ</small>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            }
+
+            <div class="total-row p-3 rounded">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-5 text-muted">Tổng thanh toán:</span>
+                    <span class="fs-3 text-gold">@Model.TongTien.ToString("#,##0") VNĐ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

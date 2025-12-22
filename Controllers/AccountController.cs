@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using QuanLyKhachSan.Models;
+using System.Data.Entity;
 namespace QuanLyKhachSan.Controllers
 {
     public class AccountController : Controller
@@ -78,7 +79,7 @@ namespace QuanLyKhachSan.Controllers
         {
             if (ModelState.IsValid)
             {
-                // --- SỬA Ở ĐÂY ---
+
                 // Thêm điều kiện: u.Status == 1 (Chỉ lấy tài khoản đang hoạt động)
                 var user = db.Account.FirstOrDefault(u =>
                     u.TenDangNhap == model.TenDangNhap &&
@@ -118,9 +119,6 @@ namespace QuanLyKhachSan.Controllers
         {
             // Xóa hết tất cả session khi đăng xuất
             Session.Clear();
-            // Hoặc xóa từng cái:
-            // Session["UserID"] = null;
-            // Session["User"] = null;
 
             return RedirectToAction("Index", "Home");
         }
@@ -176,7 +174,6 @@ namespace QuanLyKhachSan.Controllers
             }
 
             // LOGIC CHÍNH: Tìm user có Tên đăng nhập và SĐT khớp nhau
-            // (Dù tên đăng nhập có là email hay gì đi nữa thì vẫn so sánh với cột TenDangNhap)
             var user = db.Account.FirstOrDefault(x => x.TenDangNhap == tenDangNhap && x.SoDienThoai == soDienThoai);
 
             if (user != null)
@@ -193,6 +190,51 @@ namespace QuanLyKhachSan.Controllers
                 ViewBag.Error = "Tên đăng nhập hoặc Số điện thoại không chính xác!";
                 return View();
             }
+        }
+        // GET: Lịch sử đặt phòng của khách hàng
+        public ActionResult History()
+        {
+
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = Session["User"] as QuanLyKhachSan.Models.Account;
+            int idUser = user.IDTaiKhoan;
+
+            var listHoaDon = db.HoaDon
+                               .Where(h => h.IDTaiKhoan == idUser)
+                               .OrderByDescending(h => h.NgayDat)
+                               .ToList();
+
+            return View(listHoaDon);
+        }
+        // GET: Xem chi tiết một hóa đơn cụ thể
+        public ActionResult HistoryDetail(int id)
+        {
+            if (Session["User"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = Session["User"] as QuanLyKhachSan.Models.Account;
+
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            int idUser = user.IDTaiKhoan;
+
+            var hoaDon = db.HoaDon
+                     .Include("CTHDs.Phong")       
+                     .Include("CT_DichVus.DichVu") 
+                     .FirstOrDefault(h => h.MaHD == id && h.IDTaiKhoan == idUser);
+
+            if (hoaDon == null)
+            {
+                return RedirectToAction("History");
+            }
+
+            return View(hoaDon);
         }
     }
 }
